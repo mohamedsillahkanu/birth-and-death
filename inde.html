@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRVS Data Collection Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e6edf3;
+            line-height: 1.6;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 120px;
+            background: rgba(30, 41, 59, 0.6);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border-color: transparent;
+        }
+
+        .form-section {
+            display: none;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .required {
+            color: #ef4444;
+            margin-left: 3px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #e6edf3;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option:hover,
+        .checkbox-option:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .radio-option input,
+        .checkbox-option input {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .success-message,
+        .error-message {
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #3b82f6;
+            font-size: 13px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #e6edf3;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(148, 163, 184, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .form-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">CRVS</div>
+            <h1 class="title">Data Collection Form</h1>
+            <p class="subtitle">Civil Registration & Vital Statistics</p>
+        </div>
+
+        <div class="info-box">
+            <strong>Setup Required:</strong> Before using this form, you need to:
+            <ol style="margin-top: 10px; margin-left: 20px;">
+                <li>Create a Google Apps Script Web App</li>
+                <li>Set up your Google Sheet with appropriate columns</li>
+                <li>Replace the SCRIPT_URL below with your deployment URL</li>
+            </ol>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            Data submitted successfully!
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            Error submitting data. Please try again.
+        </div>
+
+        <div class="form-tabs">
+            <button class="tab-btn active" onclick="showForm('birth')">Birth Registration</button>
+            <button class="tab-btn" onclick="showForm('death')">Death Registration</button>
+        </div>
+
+        <!-- Birth Registration Form -->
+        <form id="birthForm" class="form-section active">
+            <div class="section-title">Birth Registration</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Region<span class="required">*</span></label>
+                    <select class="form-select" name="region" required>
+                        <option value="">Select Region</option>
+                        <option value="Northern">Northern Region</option>
+                        <option value="Southern">Southern Region</option>
+                        <option value="Eastern">Eastern Region</option>
+                        <option value="Western">Western Area</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">District<span class="required">*</span></label>
+                    <select class="form-select" name="district" required>
+                        <option value="">Select District</option>
+                        <option value="Western Area Urban">Western Area Urban</option>
+                        <option value="Western Area Rural">Western Area Rural</option>
+                        <option value="Bo">Bo</option>
+                        <option value="Kenema">Kenema</option>
+                        <option value="Kailahun">Kailahun</option>
+                        <option value="Bombali">Bombali</option>
+                        <option value="Kambia">Kambia</option>
+                        <option value="Port Loko">Port Loko</option>
+                        <option value="Tonkolili">Tonkolili</option>
+                        <option value="Kono">Kono</option>
+                        <option value="Bonthe">Bonthe</option>
+                        <option value="Moyamba">Moyamba</option>
+                        <option value="Pujehun">Pujehun</option>
+                        <option value="Koinadugu">Koinadugu</option>
+                        <option value="Falaba">Falaba</option>
+                        <option value="Karene">Karene</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
+                <select class="form-select" name="chiefdom" id="birthChiefdom" required>
+                    <option value="">First select a district</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Was child born in a Health Facility?<span class="required">*</span></label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="bornInHF" value="Yes" required onchange="toggleFacilityFields(true)">
+                        <span>Yes - Born in Health Facility</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="bornInHF" value="No" onchange="toggleFacilityFields(false)">
+                        <span>No - Born outside Health Facility</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="facilityFieldsGroup" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Select Health Facility<span class="required">*</span></label>
+                    <select class="form-select" name="facilityFromList" id="birthFacilitySelect" onchange="checkOtherFacility(this)">
+                        <option value="">First select chiefdom to see facilities</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="otherFacilityGroup" style="display: none;">
+                    <label class="form-label">Enter Facility Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="facilityOther" id="facilityOtherInput" placeholder="Type the facility name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Child's Full Name<span class="required">*</span></label>
+                <input type="text" class="form-input" name="childName" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Date of Birth<span class="required">*</span></label>
+                    <input type="date" class="form-input" name="dateOfBirth" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sex<span class="required">*</span></label>
+                    <select class="form-select" name="sex" required>
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Place of Birth<span class="required">*</span></label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="placeOfBirth" value="Health Facility" required>
+                        <span>Health Facility</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="placeOfBirth" value="Home with TBA">
+                        <span>Home with Traditional Birth Attendant</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="placeOfBirth" value="Home Unassisted">
+                        <span>Home (Unassisted)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mother's Full Name<span class="required">*</span></label>
+                <input type="text" class="form-input" name="motherName" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Father's Full Name</label>
+                <input type="text" class="form-input" name="fatherName">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Mother's Contact</label>
+                    <input type="tel" class="form-input" name="motherContact" placeholder="+232...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Registration Date<span class="required">*</span></label>
+                    <input type="date" class="form-input" name="registrationDate" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Data Collector Name<span class="required">*</span></label>
+                <input type="text" class="form-input" name="collectorName" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Birth Registration</button>
+        </form>
+
+        <!-- Death Registration Form -->
+        <form id="deathForm" class="form-section">
+            <div class="section-title">Death Registration</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Region<span class="required">*</span></label>
+                    <select class="form-select" name="region" required>
+                        <option value="">Select Region</option>
+                        <option value="Northern">Northern Region</option>
+                        <option value="Southern">Southern Region</option>
+                        <option value="Eastern">Eastern Region</option>
+                        <option value="Western">Western Area</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">District<span class="required">*</span></label>
+                    <select class="form-select" name="district" required>
+                        <option value="">Select District</option>
+                        <option value="Western Area Urban">Western Area Urban</option>
+                        <option value="Western Area Rural">Western Area Rural</option>
+                        <option value="Bo">Bo</option>
+                        <option value="Kenema">Kenema</option>
+                        <option value="Kailahun">Kailahun</option>
+                        <option value="Bombali">Bombali</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
+                    <select class="form-select" name="chiefdom" id="deathChiefdom" required>
+                        <option value="">First select a district</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Facility Name</label>
+                    <input type="text" class="form-input" name="facility">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Deceased Full Name<span class="required">*</span></label>
+                <input type="text" class="form-input" name="deceasedName" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Date of Death<span class="required">*</span></label>
+                    <input type="date" class="form-input" name="dateOfDeath" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Age at Death<span class="required">*</span></label>
+                    <input type="number" class="form-input" name="ageAtDeath" required min="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Sex<span class="required">*</span></label>
+                <select class="form-select" name="sex" required>
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Age Category<span class="required">*</span></label>
+                <select class="form-select" name="ageCategory" required>
+                    <option value="">Select</option>
+                    <option value="Under 1 year">Under 1 year (Infant)</option>
+                    <option value="1-4 years">1-4 years (Child)</option>
+                    <option value="5-14 years">5-14 years</option>
+                    <option value="15-49 years">15-49 years (Reproductive Age)</option>
+                    <option value="50+ years">50+ years</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Was this a Maternal Death?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="maternalDeath" value="No">
+                        <span>No</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="maternalDeath" value="Yes">
+                        <span>Yes - Death during pregnancy, childbirth, or within 42 days postpartum</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Cause of Death Information Available?<span class="required">*</span></label>
+                <select class="form-select" name="causeOfDeathType" required>
+                    <option value="">Select</option>
+                    <option value="Medical Certificate">Medical Certificate of Cause of Death</option>
+                    <option value="Verbal Autopsy">Verbal Autopsy Completed</option>
+                    <option value="None">No Cause Information Available</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Primary Cause of Death (if known)</label>
+                <select class="form-select" name="causeOfDeath">
+                    <option value="">Select if known</option>
+                    <option value="Malaria">Malaria</option>
+                    <option value="Respiratory Infections">Respiratory Infections</option>
+                    <option value="Diarrheal Diseases">Diarrheal Diseases</option>
+                    <option value="Cardiovascular Disease">Cardiovascular Disease</option>
+                    <option value="Tuberculosis">Tuberculosis</option>
+                    <option value="HIV/AIDS">HIV/AIDS</option>
+                    <option value="Maternal Complications">Maternal Complications</option>
+                    <option value="Neonatal Causes">Neonatal Causes</option>
+                    <option value="Injuries/Accidents">Injuries/Accidents</option>
+                    <option value="Other">Other</option>
+                    <option value="Unknown">Unknown</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Additional Information</label>
+                <textarea class="form-textarea" name="additionalInfo" placeholder="Any additional relevant information about the death..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Registration Date<span class="required">*</span></label>
+                    <input type="date" class="form-input" name="registrationDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Data Collector Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="collectorName" required>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Death Registration</button>
+        </form>
+
+        <!-- Facility Report Form -->
+        <form id="facilityForm" class="form-section">
+            <div class="section-title" style="display: none;">Monthly Facility Report</div>
+            <!-- This form is hidden - facility data is auto-populated from birth/death registrations -->
+        </form>
+    </div>
+
+    <script>
+        // IMPORTANT: Replace this URL with your Google Apps Script Web App URL
+        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+        // Chiefdom data by district
+        const chiefdomData = {
+            'Western Area Urban': ['East I', 'East II', 'East III', 'West I', 'West II', 'West III', 'Central I', 'Central II'],
+            'Western Area Rural': ['Waterloo Zone', 'Kaffu Bullom', 'Koya', 'Kossoh Town Zone'],
+            'Bo': ['Badjia', 'Bagbo', 'Bagbwe', 'Baoma', 'Bumpe Ngao', 'Jaiama-Bongor', 'Kakua', 'Komboya', 'Lugbu', 'Niawa Lenga', 'Selenga', 'Tikonko', 'Valunia', 'Wunde'],
+            'Kenema': ['Dama', 'Dodo', 'Gaura', 'Gorama Mende', 'Kandu-Leppiama', 'Koya', 'Lower Bambara', 'Malegohun', 'Nomo', 'Nongowa', 'Simbaru', 'Small Bo', 'Tunkia', 'Upper Bambara', 'Wandor'],
+            'Kailahun': ['Dea', 'Jawei', 'Kissi Kama', 'Kissi Teng', 'Kissi Tongi', 'Luawa', 'Malema', 'Mandu', 'Njaluahun', 'Peje Bongre', 'Peje West', 'Penguia', 'Upper Bambara', 'Yawei'],
+            'Bombali': ['Bombali Shebora', 'Gbanti Kamaranka', 'Gbendembu Ngowahun', 'Libeisaygahun', 'Magbaimba Ndowahun', 'Makari Gbanti', 'Paki Masabong', 'Safroko Limba', 'Sella Limba', 'Tambakha'],
+            'Kambia': ['Bramaia', 'Gbinleh Dixon', 'Magbema', 'Mambolo', 'Masungbala', 'Samu', 'Tonko Limba'],
+            'Port Loko': ['Buya Romende', 'Dibia', 'Kaffu Bullom', 'Koya', 'Lokomasama', 'Maforki', 'Marampa', 'Masimera', 'TMS', 'Tinkatupa Makontho'],
+            'Tonkolili': ['Gbonkolenken', 'Kalansongoia', 'Kholifa Mabang', 'Kholifa Rowala', 'Kunike', 'Kunike Barina', 'Malal Mara', 'Sambaia', 'Tane', 'Yoni'],
+            'Kono': ['Fiama', 'Gbane', 'Gbane Kandor', 'Gbense', 'Gorama Kono', 'Kamara', 'Lei', 'Mafindor', 'Nimikoro', 'Nimiyama', 'Sandor', 'Soa', 'Tankoro', 'Toli'],
+            'Bonthe': ['Bendu Cha', 'Bum', 'Dema', 'Imperri', 'Jong', 'Kpanda Kemo', 'Kwamabai Krim', 'Nongoba Bullom', 'Sittia', 'Sogbini', 'Yawbeko'],
+            'Moyamba': ['Bagruwa', 'Bumpeh', 'Dasse', 'Fakunya', 'Kagboro', 'Kaiyamba', 'Kamajei', 'Kori', 'Kowa', 'Lower Banta', 'Ribbi', 'Timdale', 'Upper Banta'],
+            'Pujehun': ['Barri', 'Galliness-Perri', 'Kpaka', 'Makpele', 'Malen', 'Panga Kabonde', 'Panga Krim', 'Soro-Gbema', 'Sorogbeima', 'Yakemur'],
+            'Koinadugu': ['Dembelia Sinkunia', 'Folasaba', 'Kasunko', 'Mongo', 'Neini', 'Nieni', 'Sengbeh', 'Sulima', 'Wara Wara Bafodia', 'Wara Wara Yagala'],
+            'Falaba': ['Mongo', 'Sulima', 'Wara Wara Bafodia'],
+            'Karene': ['Dibia', 'Libeisaygahun', 'Sella Limba', 'Tambakha']
+        };
+
+        // Health facilities by chiefdom (sample data - expand as needed)
+        const facilitiesByChiefdom = {
+            'East I': ['Connaught Hospital', 'Rokupa Government Hospital', 'PCM Health Centre', 'Murray Town CHC'],
+            'East II': ['Princess Christian Maternity Hospital', 'Kissy Community Health Centre', 'Kissy Dockyard CHP'],
+            'East III': ['Military Hospital Wilberforce', 'Circular Road CHC', 'Congo Cross CHP'],
+            'West I': ['Lumley Government Hospital', 'Aberdeen Women\'s Centre', 'Lumley CHC'],
+            'West II': ['Juba CHC', 'Leicester Peak CHP', 'Hill Station MCHP'],
+            'West III': ['Goderich CHC', 'Hamilton CHP', 'Tokeh MCHP'],
+            'Central I': ['Emergency Hospital', 'Central Health Centre', 'Tower Hill CHC'],
+            'Central II': ['Brookfields CHC', 'Wilberforce CHC', 'Magazine CHP'],
+            'Waterloo Zone': ['Waterloo Hospital', 'Waterloo CHC', 'Hastings MCHP'],
+            'Kaffu Bullom': ['Port Loko Government Hospital', 'Kaffu Bullom CHC'],
+            'Badjia': ['Badjia CHC', 'Badjia MCHP'],
+            'Bumpe Ngao': ['Bumpe CHC', 'Ngao MCHP'],
+            'Kakua': ['Kakua CHC', 'Kakua MCHP'],
+            'Dama': ['Dama CHC', 'Dama MCHP'],
+            'Nongowa': ['Nongowa CHC', 'Nongowa MCHP'],
+            'Gorama Mende': ['Gorama CHC', 'Gorama MCHP'],
+            'Bombali Shebora': ['Makeni Government Hospital', 'Makeni CHC', 'Masuba MCHP'],
+            'Safroko Limba': ['Makump CHC', 'Safroko MCHP']
+        };
+
+        // Toggle facility fields based on whether born in HF
+        function toggleFacilityFields(show) {
+            const facilityGroup = document.getElementById('facilityFieldsGroup');
+            const facilitySelect = document.querySelector('select[name="facilityFromList"]');
+            const facilityOtherInput = document.getElementById('facilityOtherInput');
+            
+            if (show) {
+                facilityGroup.style.display = 'block';
+                facilitySelect.required = true;
+            } else {
+                facilityGroup.style.display = 'none';
+                facilitySelect.required = false;
+                facilitySelect.value = '';
+                facilityOtherInput.value = '';
+                facilityOtherInput.required = false;
+                document.getElementById('otherFacilityGroup').style.display = 'none';
+            }
+        }
+
+        // Check if "Other" is selected in facility dropdown
+        function checkOtherFacility(selectElement) {
+            const otherGroup = document.getElementById('otherFacilityGroup');
+            const otherInput = document.getElementById('facilityOtherInput');
+            const selectedValue = selectElement.value;
+            
+            if (selectedValue === 'Other') {
+                otherGroup.style.display = 'block';
+                otherInput.required = true;
+            } else {
+                otherGroup.style.display = 'none';
+                otherInput.required = false;
+                otherInput.value = '';
+            }
+        }
+
+        // Populate chiefdom dropdown based on district selection
+        function setupCascadingDropdowns(districtSelectName, chiefdomSelectId) {
+            const districtSelect = document.querySelector(`select[name="${districtSelectName}"]`);
+            const chiefdomSelect = document.getElementById(chiefdomSelectId);
+
+            districtSelect.addEventListener('change', function() {
+                const selectedDistrict = this.value;
+                chiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
+                
+                if (selectedDistrict && chiefdomData[selectedDistrict]) {
+                    chiefdomData[selectedDistrict].forEach(chiefdom => {
+                        const option = document.createElement('option');
+                        option.value = chiefdom;
+                        option.textContent = chiefdom;
+                        chiefdomSelect.appendChild(option);
+                    });
+                    chiefdomSelect.disabled = false;
+                } else {
+                    chiefdomSelect.innerHTML = '<option value="">First select a district</option>';
+                    chiefdomSelect.disabled = true;
+                }
+            });
+        }
+
+        // Initialize cascading dropdowns for both forms
+        setupCascadingDropdowns('district', 'birthChiefdom');
+        
+        // Birth form - also populate facilities when chiefdom changes
+        const birthForm = document.getElementById('birthForm');
+        const birthChiefdomSelect = document.getElementById('birthChiefdom');
+        const birthFacilitySelect = document.getElementById('birthFacilitySelect');
+        
+        birthChiefdomSelect.addEventListener('change', function() {
+            const selectedChiefdom = this.value;
+            birthFacilitySelect.innerHTML = '<option value="">Select Health Facility</option>';
+            
+            if (selectedChiefdom && facilitiesByChiefdom[selectedChiefdom]) {
+                facilitiesByChiefdom[selectedChiefdom].forEach(facility => {
+                    const option = document.createElement('option');
+                    option.value = facility;
+                    option.textContent = facility;
+                    birthFacilitySelect.appendChild(option);
+                });
+                
+                // Add "Other" option
+                const otherOption = document.createElement('option');
+                otherOption.value = 'Other';
+                otherOption.textContent = '-- Other (Type facility name) --';
+                birthFacilitySelect.appendChild(otherOption);
+                
+                birthFacilitySelect.disabled = false;
+            } else {
+                birthFacilitySelect.innerHTML = '<option value="">Select chiefdom first to see facilities</option>';
+                birthFacilitySelect.disabled = true;
+            }
+        });
+        
+        // For death form - need to find the district select differently
+        const deathForm = document.getElementById('deathForm');
+        const deathDistrictSelect = deathForm.querySelector('select[name="district"]');
+        const deathChiefdomSelect = document.getElementById('deathChiefdom');
+        
+        deathDistrictSelect.addEventListener('change', function() {
+            const selectedDistrict = this.value;
+            deathChiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
+            
+            if (selectedDistrict && chiefdomData[selectedDistrict]) {
+                chiefdomData[selectedDistrict].forEach(chiefdom => {
+                    const option = document.createElement('option');
+                    option.value = chiefdom;
+                    option.textContent = chiefdom;
+                    deathChiefdomSelect.appendChild(option);
+                });
+                deathChiefdomSelect.disabled = false;
+            } else {
+                deathChiefdomSelect.innerHTML = '<option value="">First select a district</option>';
+                deathChiefdomSelect.disabled = true;
+            }
+        });
+
+        // Form switching
+        function showForm(formType) {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(formType + 'Form').classList.add('active');
+            event.target.classList.add('active');
+
+            hideMessages();
+        }
+
+        function hideMessages() {
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function showSuccess() {
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            setTimeout(hideMessages, 5000);
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message || 'Error submitting data. Please try again.';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Form submission handler
+        function handleSubmit(formId, sheetName) {
+            const form = document.getElementById(formId);
+            
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = form.querySelector('.submit-btn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+
+                try {
+                    const formData = new FormData(form);
+                    const data = {
+                        sheetName: sheetName,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    // Convert FormData to object
+                    for (let [key, value] of formData.entries()) {
+                        data[key] = value;
+                    }
+
+                    // Special handling for birth form - combine facility fields
+                    if (formId === 'birthForm') {
+                        const bornInHF = data.bornInHF;
+                        if (bornInHF === 'Yes') {
+                            const facilityFromList = data.facilityFromList;
+                            const facilityOther = data.facilityOther;
+                            
+                            if (facilityFromList === 'Other' && facilityOther) {
+                                data.facility = facilityOther;
+                            } else {
+                                data.facility = facilityFromList;
+                            }
+                        } else {
+                            data.facility = 'Not in Health Facility';
+                        }
+                        
+                        // Clean up temporary fields
+                        delete data.facilityFromList;
+                        delete data.facilityOther;
+                    }
+
+                    // Check if URL is configured
+                    if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                        throw new Error('Please configure your Google Apps Script URL first');
+                    }
+
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    // Note: no-cors mode doesn't allow reading response
+                    // We'll assume success if no error thrown
+                    showSuccess();
+                    form.reset();
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    showError(error.message);
+                }
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = formId === 'birthForm' ? 'Submit Birth Registration' :
+                                       formId === 'deathForm' ? 'Submit Death Registration' :
+                                       'Submit Facility Report';
+            });
+        }
+
+        // Initialize form handlers
+        handleSubmit('birthForm', 'Births');
+        handleSubmit('deathForm', 'Deaths');
+
+        // Auto-populate current date for registration date fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[name="registrationDate"]').forEach(input => {
+                input.value = today;
+            });
+        });
+    </script>
+</body>
+</html>
