@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sierra Leone CRVS & Vital Statistics Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e6edf3;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .logos {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-container {
+            text-align: center;
+        }
+
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            margin-bottom: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50%;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+
+        .logo-label {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .stats-bar {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 15px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 150px;
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #e6edf3;
+            margin-bottom: 5px;
+        }
+
+        .card-subtitle {
+            color: #94a3b8;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .card-metric {
+            text-align: right;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .indicator-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .indicator-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .indicator-name {
+            font-size: 13px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .indicator-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e6edf3;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-good {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .status-critical {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .alert-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .alert-title {
+            color: #ef4444;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .alert-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(239, 68, 68, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+            margin-bottom: 10px;
+        }
+
+        .filter-section {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #e6edf3;
+            font-size: 14px;
+            min-width: 150px;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .chart-container {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #e6edf3;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 24px;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-btn {
+                min-width: 100%;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .indicator-row {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logos">
+                <div class="logo-container">
+                    <div class="logo-placeholder">CRVS</div>
+                    <div class="logo-label">Civil Registration</div>
+                </div>
+                <div class="logo-container">
+                    <div class="logo-placeholder" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">MoHS</div>
+                    <div class="logo-label">Ministry of Health</div>
+                </div>
+                <div class="logo-container">
+                    <div class="logo-placeholder" style="background: linear-gradient(135deg, #ef4444, #f59e0b);">Stats SL</div>
+                    <div class="logo-label">Statistics Sierra Leone</div>
+                </div>
+            </div>
+            <h1 class="title">Civil Registration & Vital Statistics Dashboard</h1>
+            <p class="subtitle">Integrated Health Information & Policy Analytics System</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number">127,845</span>
+                <span class="stat-label">Births Registered (2024)</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">18,234</span>
+                <span class="stat-label">Deaths Registered (2024)</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">73%</span>
+                <span class="stat-label">Registration Completeness</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">1,352</span>
+                <span class="stat-label">Reporting Facilities</span>
+            </div>
+        </div>
+
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="showTab('overview')">System Overview</button>
+            <button class="tab-btn" onclick="showTab('births')">Birth Registration</button>
+            <button class="tab-btn" onclick="showTab('deaths')">Death Registration</button>
+            <button class="tab-btn" onclick="showTab('causeofdeath')">Cause of Death</button>
+            <button class="tab-btn" onclick="showTab('quality')">Data Quality</button>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <div class="alert-box">
+                <div class="alert-title">⚠️ System Alerts</div>
+                <div class="alert-item">
+                    <div>
+                        <strong>Kailahun District:</strong> Birth registration completeness below 60%
+                    </div>
+                    <span class="status-badge status-critical">Critical</span>
+                </div>
+                <div class="alert-item">
+                    <div>
+                        <strong>Bombali District:</strong> 15 days average delay in death registration
+                    </div>
+                    <span class="status-badge status-warning">Warning</span>
+                </div>
+                <div class="alert-item">
+                    <div>
+                        <strong>Port Loko District:</strong> 40% of deaths without cause-of-death information
+                    </div>
+                    <span class="status-badge status-warning">Warning</span>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Western Area Urban</div>
+                            <div class="card-subtitle">District Performance</div>
+                        </div>
+                        <div class="card-metric">
+                            <div class="metric-value">92%</div>
+                            <div class="metric-label">Completeness</div>
+                        </div>
+                    </div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Births Registered</div>
+                                <div class="indicator-value">28,456</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Target</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #94a3b8;">30,900</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-good">Good</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Deaths Registered</div>
+                                <div class="indicator-value">4,823</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Target</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #94a3b8;">5,200</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-good">Good</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Bo District</div>
+                            <div class="card-subtitle">District Performance</div>
+                        </div>
+                        <div class="card-metric">
+                            <div class="metric-value">78%</div>
+                            <div class="metric-label">Completeness</div>
+                        </div>
+                    </div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Births Registered</div>
+                                <div class="indicator-value">15,234</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Target</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #94a3b8;">19,500</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-warning">Warning</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Deaths Registered</div>
+                                <div class="indicator-value">2,145</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Target</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #94a3b8;">2,800</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-warning">Warning</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Kailahun District</div>
+                            <div class="card-subtitle">District Performance</div>
+                        </div>
+                        <div class="card-metric">
+                            <div class="metric-value">58%</div>
+                            <div class="metric-label">Completeness</div>
+                        </div>
+                    </div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Births Registered</div>
+                                <div class="indicator-value">8,923</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Target</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #94a3b8;">15,400</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-critical">Critical</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Deaths Registered</div>
+                                <div class="indicator-value">1,234</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Target</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #94a3b8;">2,200</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-critical">Critical</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Birth Registration Section -->
+        <div id="births" class="content-section">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <span class="filter-label">Time Period:</span>
+                    <select class="filter-select">
+                        <option>2024</option>
+                        <option>2023</option>
+                        <option>Last 6 Months</option>
+                        <option>Last Quarter</option>
+                    </select>
+                    <span class="filter-label">Region:</span>
+                    <select class="filter-select">
+                        <option>All Regions</option>
+                        <option>Northern Region</option>
+                        <option>Southern Region</option>
+                        <option>Eastern Region</option>
+                        <option>Western Area</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Birth Registration Trends by Month (2024)</div>
+                <div style="color: #94a3b8; text-align: center; padding: 60px 20px;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                    <div>Monthly birth registration data visualization would display here</div>
+                    <div style="margin-top: 10px; font-size: 14px;">Showing registration completeness, timeliness, and geographic distribution</div>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">Registration Completeness by Facility Type</div>
+                    <div class="indicator-grid">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Hospitals</span>
+                                <span style="color: #10b981; font-weight: 700;">95%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 95%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">CHCs</span>
+                                <span style="color: #3b82f6; font-weight: 700;">82%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 82%; background: linear-gradient(90deg, #3b82f6, #8b5cf6);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">MCHPs</span>
+                                <span style="color: #fbbf24; font-weight: 700;">68%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 68%; background: linear-gradient(90deg, #fbbf24, #f59e0b);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">CHPs</span>
+                                <span style="color: #ef4444; font-weight: 700;">54%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 54%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">Registration Timeliness</div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Within 7 Days</div>
+                                <div class="indicator-value">45,234</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #10b981;">35%</div>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">8-30 Days</div>
+                                <div class="indicator-value">58,923</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #3b82f6;">46%</div>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Over 30 Days</div>
+                                <div class="indicator-value">23,688</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #fbbf24;">19%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">Birth Location Analysis</div>
+                    <div class="indicator-grid">
+                        <div style="padding: 15px; background: rgba(15, 23, 42, 0.6); border-radius: 10px; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #94a3b8;">Health Facility</span>
+                                <span style="color: #10b981; font-size: 24px; font-weight: 700;">87,234</span>
+                            </div>
+                        </div>
+                        <div style="padding: 15px; background: rgba(15, 23, 42, 0.6); border-radius: 10px; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #94a3b8;">Home (with TBA)</span>
+                                <span style="color: #3b82f6; font-size: 24px; font-weight: 700;">32,456</span>
+                            </div>
+                        </div>
+                        <div style="padding: 15px; background: rgba(15, 23, 42, 0.6); border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #94a3b8;">Home (unassisted)</span>
+                                <span style="color: #fbbf24; font-size: 24px; font-weight: 700;">8,155</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Death Registration Section -->
+        <div id="deaths" class="content-section">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <span class="filter-label">Time Period:</span>
+                    <select class="filter-select">
+                        <option>2024</option>
+                        <option>2023</option>
+                        <option>Last 6 Months</option>
+                    </select>
+                    <span class="filter-label">Age Group:</span>
+                    <select class="filter-select">
+                        <option>All Ages</option>
+                        <option>Under 5</option>
+                        <option>5-14 years</option>
+                        <option>15-49 years</option>
+                        <option>50+ years</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Infant Deaths (Under 1 year)</div>
+                            <div class="card-subtitle">January - September 2024</div>
+                        </div>
+                        <div class="card-metric">
+                            <div class="metric-value">3,245</div>
+                            <div class="metric-label">Total Deaths</div>
+                        </div>
+                    </div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Registered</div>
+                                <div class="indicator-value">2,456</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Rate</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #fbbf24;">76%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-warning">Below Target</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Child Deaths (1-4 years)</div>
+                            <div class="card-subtitle">January - September 2024</div>
+                        </div>
+                        <div class="card-metric">
+                            <div class="metric-value">1,823</div>
+                            <div class="metric-label">Total Deaths</div>
+                        </div>
+                    </div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Registered</div>
+                                <div class="indicator-value">1,289</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Rate</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #ef4444;">71%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-critical">Critical</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Maternal Deaths</div>
+                            <div class="card-subtitle">January - September 2024</div>
+                        </div>
+                        <div class="card-metric">
+                            <div class="metric-value">234</div>
+                            <div class="metric-label">Total Deaths</div>
+                        </div>
+                    </div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Registered</div>
+                                <div class="indicator-value">198</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Rate</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #3b82f6;">85%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-good">Good</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cause of Death Section -->
+        <div id="causeofdeath" class="content-section">
+            <div class="chart-container">
+                <div class="chart-title">Top 10 Causes of Death (2024)</div>
+                <div style="padding: 20px;">
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">1. Malaria</div>
+                                <div class="indicator-value" style="color: #ef4444;">3,245</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px;">18%</div>
+                            </div>
+                            <div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 18%; background: #ef4444;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">2. Respiratory Infections</div>
+                                <div class="indicator-value" style="color: #f59e0b;">2,834</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px;">16%</div>
+                            </div>
+                            <div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 16%; background: #f59e0b;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">3. Diarrheal Diseases</div>
+                                <div class="indicator-value" style="color: #fbbf24;">2,156</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px;">12%</div>
+                            </div>
+                            <div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 12%; background: #fbbf24;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">4. Cardiovascular Disease</div>
+                                <div class="indicator-value" style="color: #3b82f6;">1,923</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px;">11%</div>
+                            </div>
+                            <div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 11%; background: #3b82f6;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">5. Tuberculosis</div>
+                                <div class="indicator-value" style="color: #8b5cf6;">1,645</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px;">9%</div>
+                            </div>
+                            <div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 9%; background: #8b5cf6;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">Cause-of-Death Data Completeness</div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Medical Certificate</div>
+                                <div class="indicator-value">8,234</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #10b981;">45%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-good">Good</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Verbal Autopsy</div>
+                                <div class="indicator-value">6,145</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #3b82f6;">34%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-good">Good</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">No Cause Information</div>
+                                <div class="indicator-value">3,855</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div class="indicator-name">Percentage</div>
+                                <div class="indicator-value" style="font-size: 18px; color: #fbbf24;">21%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-warning">Needs Improvement</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">Disease Surveillance Integration</div>
+                    <div style="color: #94a3b8; text-align: center; padding: 30px 15px;">
+                        <div style="font-size: 36px; margin-bottom: 15px;">🔗</div>
+                        <div style="margin-bottom: 10px;">Integration with malaria, TB, and other disease surveillance systems</div>
+                        <div style="font-size: 14px; color: #64748b;">Cross-referencing mortality data with case reporting</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Quality Section -->
+        <div id="quality" class="content-section">
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">Completeness by District (Top 5)</div>
+                    <div class="indicator-grid">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Western Area Urban</span>
+                                <span style="color: #10b981; font-weight: 700;">92%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Western Area Rural</span>
+                                <span style="color: #10b981; font-weight: 700;">87%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 87%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Bo</span>
+                                <span style="color: #3b82f6; font-weight: 700;">78%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 78%; background: linear-gradient(90deg, #3b82f6, #8b5cf6);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Kenema</span>
+                                <span style="color: #fbbf24; font-weight: 700;">72%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 72%; background: linear-gradient(90deg, #fbbf24, #f59e0b);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Makeni</span>
+                                <span style="color: #fbbf24; font-weight: 700;">69%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 69%; background: linear-gradient(90deg, #fbbf24, #f59e0b);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">Completeness by District (Bottom 5)</div>
+                    <div class="indicator-grid">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Kailahun</span>
+                                <span style="color: #ef4444; font-weight: 700;">58%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 58%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Koinadugu</span>
+                                <span style="color: #ef4444; font-weight: 700;">61%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 61%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Bonthe</span>
+                                <span style="color: #fbbf24; font-weight: 700;">64%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 64%; background: linear-gradient(90deg, #fbbf24, #f59e0b);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Pujehun</span>
+                                <span style="color: #fbbf24; font-weight: 700;">66%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 66%; background: linear-gradient(90deg, #fbbf24, #f59e0b);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="color: #94a3b8;">Kambia</span>
+                                <span style="color: #fbbf24; font-weight: 700;">67%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 67%; background: linear-gradient(90deg, #fbbf24, #f59e0b);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 20px;">Data Quality Indicators</div>
+                    <div class="indicator-grid">
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Accuracy Score</div>
+                                <div class="indicator-value">8.2/10</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-good">Good</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Timeliness Score</div>
+                                <div class="indicator-value">7.5/10</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-warning">Fair</span>
+                            </div>
+                        </div>
+                        <div class="indicator-row">
+                            <div>
+                                <div class="indicator-name">Consistency Score</div>
+                                <div class="indicator-value">8.8/10</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="status-badge status-good">Excellent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all content sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('CRVS Dashboard initialized');
+        });
+    </script>
+</body>
+</html>
