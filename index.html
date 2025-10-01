@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sierra Leone Malaria Surveillance Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e6edf3;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 16px;
+        }
+
+        .load-section {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .load-button {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .load-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        .filters {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .filter-select {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #e6edf3;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .stat-card.fever::before { background: #f59e0b; }
+        .stat-card.tested::before { background: #3b82f6; }
+        .stat-card.positive::before { background: #ef4444; }
+        .stat-card.treated::before { background: #10b981; }
+        .stat-card.deaths::before { background: #8b5cf6; }
+        .stat-card.admissions::before { background: #ec4899; }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #e6edf3;
+            margin-bottom: 5px;
+        }
+
+        .stat-sublabel {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #e6edf3;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .table-container {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.8);
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid rgba(148, 163, 184, 0.2);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            color: #e6edf3;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(148, 163, 184, 0.2);
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            color: #ef4444;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Sierra Leone Malaria Surveillance Dashboard</h1>
+            <p class="subtitle">Real-time analysis from Google Sheets | Region → District → Chiefdom → Facility</p>
+            <p id="lastUpdated" style="color: #64748b; font-size: 12px; margin-top: 10px;"></p>
+            <div style="margin-top: 20px; background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(59, 130, 246, 0.3);">
+                <p style="color: #3b82f6; font-size: 13px; font-weight: 600; margin-bottom: 8px;">⚠️ Important: Download Required</p>
+                <p style="color: #94a3b8; font-size: 12px; line-height: 1.6;">
+                    This dashboard cannot fetch data directly in the Claude.ai browser environment due to security restrictions.
+                    <br><strong>Solution:</strong> Download this HTML file and open it in your browser (Chrome, Firefox, Edge) - it will work perfectly!
+                </p>
+            </div>
+        </div>
+
+        <div id="content" style="display: none;">
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Year</label>
+                    <select class="filter-select" id="yearFilter" onchange="applyFilters()">
+                        <option value="all">All Years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Month</label>
+                    <select class="filter-select" id="monthFilter" onchange="applyFilters()">
+                        <option value="all">All Months</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Region</label>
+                    <select class="filter-select" id="regionFilter" onchange="applyFilters()">
+                        <option value="all">All Regions</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">District</label>
+                    <select class="filter-select" id="districtFilter" onchange="applyFilters()">
+                        <option value="all">All Districts</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Chiefdom</label>
+                    <select class="filter-select" id="chiefdomFilter" onchange="applyFilters()">
+                        <option value="all">All Chiefdoms</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="statsGrid"></div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">Malaria Cases by Region</div>
+                    <canvas id="regionChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Testing & Positivity Rate</div>
+                    <canvas id="testingChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Age Group Distribution (0-59m, 5-14y, 15+y)</div>
+                    <canvas id="ageChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Treatment Timeliness (<24h vs >24h)</div>
+                    <canvas id="treatmentChart"></canvas>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="chart-title">Facility-Level Data</div>
+                <table id="facilityTable">
+                    <thead>
+                        <tr>
+                            <th>Facility</th>
+                            <th>Chiefdom</th>
+                            <th>District</th>
+                            <th>Suspected</th>
+                            <th>Tested</th>
+                            <th>Positive</th>
+                            <th>Treated</th>
+                            <th>Deaths</th>
+                            <th>Positivity %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facilityTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Loading data from Google Sheets...</p>
+        </div>
+    </div>
+
+    <script>
+        let rawData = [];
+        let filteredData = [];
+        let charts = {};
+
+        // Google Apps Script Web App URL
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxA3n0W05nn16Qvu_qZHcx48AU0C2wpWqCM2j61xRBEaaH89ixD1VUXhLTXbUFfOKvOPA/exec';
+        
+        async function loadData() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('content').style.display = 'none';
+
+            if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+                document.getElementById('loading').innerHTML = `
+                    <div class="error">
+                        <h3>Google Apps Script Setup Required</h3>
+                        <p style="margin-bottom: 20px;">Direct Google Sheets access is blocked by browser security. You need to create a Google Apps Script web app.</p>
+                        
+                        <div style="text-align: left; max-width: 700px; margin: 0 auto; background: rgba(15, 23, 42, 0.8); padding: 20px; border-radius: 10px;">
+                            <p style="font-weight: 700; color: #10b981; margin-bottom: 15px;">📋 Setup Instructions:</p>
+                            
+                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 1:</strong> Open your Google Sheet</p>
+                            <p style="margin-bottom: 15px; font-size: 13px;">Go to: Extensions → Apps Script</p>
+                            
+                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 2:</strong> Delete existing code and paste this:</p>
+                            <pre style="background: #0a0e27; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 11px; line-height: 1.5; margin-bottom: 15px;"><code>function doGet() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rows = data.slice(1);
+  
+  const jsonData = rows.map(row => {
+    const obj = {};
+    headers.forEach((header, i) => {
+      obj[header] = row[i];
+    });
+    return obj;
+  });
+  
+  return ContentService.createTextOutput(JSON.stringify(jsonData))
+    .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+                            
+                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 3:</strong> Deploy the web app</p>
+                            <ul style="font-size: 12px; line-height: 1.8; padding-left: 20px; margin-bottom: 15px;">
+                                <li>Click "Deploy" → "New deployment"</li>
+                                <li>Click gear icon → Select "Web app"</li>
+                                <li>Description: "Malaria Data API"</li>
+                                <li>Execute as: "Me"</li>
+                                <li>Who has access: "Anyone"</li>
+                                <li>Click "Deploy"</li>
+                            </ul>
+                            
+                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 4:</strong> Copy the Web App URL</p>
+                            <p style="font-size: 12px; margin-bottom: 15px;">It looks like: https://script.google.com/macros/s/...</p>
+                            
+                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 5:</strong> Update the dashboard</p>
+                            <p style="font-size: 12px;">Replace 'YOUR_APPS_SCRIPT_URL_HERE' in the dashboard code with your URL</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                rawData = await response.json();
+                
+                if (!rawData || rawData.length === 0) {
+                    throw new Error('No data found in the sheet');
+                }
+                
+                filteredData = [...rawData];
+                
+                populateFilters();
+                applyFilters();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+                // Update last updated timestamp
+                const now = new Date();
+                document.getElementById('lastUpdated').textContent = 
+                    `Last updated: ${now.toLocaleString()} | ${rawData.length} records loaded from Google Sheets`;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div class="error">
+                        <h3>Error Loading Data</h3>
+                        <p style="margin-bottom: 15px;">${error.message}</p>
+                        
+                        <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                            <p style="font-size: 13px; margin-bottom: 10px;"><strong>Troubleshooting:</strong></p>
+                            <ol style="font-size: 12px; line-height: 1.8; padding-left: 20px;">
+                                <li>Check that you've deployed the Google Apps Script web app</li>
+                                <li>Verify the URL is correct (should start with https://script.google.com/macros/s/)</li>
+                                <li>Make sure "Who has access" is set to "Anyone"</li>
+                                <li>Wait 1-2 minutes after deploying for changes to take effect</li>
+                            </ol>
+                        </div>
+                        
+                        <button class="load-button" style="margin-top: 20px; width: auto; padding: 12px 30px;" onclick="loadData()">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                const values = lines[i].split(',');
+                const row = {};
+                
+                headers.forEach((header, index) => {
+                    const value = values[index] ? values[index].trim() : '';
+                    row[header] = isNaN(value) || value === '' ? value : Number(value);
+                });
+                
+                data.push(row);
+            }
+
+            return data;
+        }
+
+        function populateFilters() {
+            const years = [...new Set(rawData.map(r => r.Year).filter(Boolean))];
+            const months = [...new Set(rawData.map(r => r.Month).filter(Boolean))];
+            const regions = [...new Set(rawData.map(r => r.Region).filter(Boolean))];
+            const districts = [...new Set(rawData.map(r => r.District).filter(Boolean))];
+            const chiefdoms = [...new Set(rawData.map(r => r.Chiefdom).filter(Boolean))];
+
+            populateSelect('yearFilter', years);
+            populateSelect('monthFilter', months);
+            populateSelect('regionFilter', regions);
+            populateSelect('districtFilter', districts);
+            populateSelect('chiefdomFilter', chiefdoms);
+        }
+
+        function populateSelect(selectId, options) {
+            const select = document.getElementById(selectId);
+            const currentValue = select.value;
+            
+            select.innerHTML = '<option value="all">All</option>';
+            options.sort().forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                select.appendChild(option);
+            });
+            
+            if (options.includes(currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        function applyFilters() {
+            const year = document.getElementById('yearFilter').value;
+            const month = document.getElementById('monthFilter').value;
+            const region = document.getElementById('regionFilter').value;
+            const district = document.getElementById('districtFilter').value;
+            const chiefdom = document.getElementById('chiefdomFilter').value;
+
+            filteredData = rawData.filter(row => {
+                return (year === 'all' || row.Year == year) &&
+                       (month === 'all' || row.Month === month) &&
+                       (region === 'all' || row.Region === region) &&
+                       (district === 'all' || row.District === district) &&
+                       (chiefdom === 'all' || row.Chiefdom === chiefdom);
+            });
+
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            updateStats();
+            updateCharts();
+            updateTable();
+        }
+
+        function updateStats() {
+            const stats = {
+                suspected: 0,
+                tested: 0,
+                positive: 0,
+                treated: 0,
+                deaths: 0,
+                admissions: 0
+            };
+
+            filteredData.forEach(row => {
+                // Suspected cases (all age groups)
+                stats.suspected += (row['Fever case - suspected Malaria 0-59m'] || 0) +
+                                  (row['Fever case - suspected Malaria 5-14y'] || 0) +
+                                  (row['Fever case - suspected Malaria 15+y'] || 0);
+
+                // Tested (RDT + Microscopy, all age groups)
+                stats.tested += (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Negative 0-59m'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Negative 5-14y'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Negative 15+y'] || 0);
+
+                // Positive cases
+                stats.positive += (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0);
+
+                // Treated
+                stats.treated += (row['Malaria treated with ACT <24 hours 0-59m'] || 0) +
+                                (row['Malaria treated with ACT >24 hours 0-59m'] || 0) +
+                                (row['Malaria treated with ACT <24 hours 5-14y'] || 0) +
+                                (row['Malaria treated with ACT >24 hours 5-14y'] || 0) +
+                                (row['Malaria treated with ACT <24 hours 15+y'] || 0) +
+                                (row['Malaria treated with ACT >24 hours 15+y'] || 0);
+
+                // Deaths
+                stats.deaths += (row['Child death - Malaria 1-59m'] || 0) +
+                               (row['Child death - Malaria 5-9y'] || 0) +
+                               (row['Child death - Malaria 10-14y'] || 0) +
+                               (row['Death malaria 15+ years Female'] || 0) +
+                               (row['Death malaria 15+ years Male'] || 0);
+
+                // Admissions
+                stats.admissions += (row['Admission - Child with malaria 0-59 months'] || 0) +
+                                   (row['Admission - Child with malaria 5-14 years'] || 0) +
+                                   (row['Admission - Malaria 15+ years'] || 0);
+            });
+
+            const positivityRate = stats.tested > 0 ? ((stats.positive / stats.tested) * 100).toFixed(1) : 0;
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card fever">
+                    <div class="stat-label">Suspected Cases</div>
+                    <div class="stat-value">${stats.suspected.toLocaleString()}</div>
+                    <div class="stat-sublabel">Fever cases</div>
+                </div>
+                <div class="stat-card tested">
+                    <div class="stat-label">Tested</div>
+                    <div class="stat-value">${stats.tested.toLocaleString()}</div>
+                    <div class="stat-sublabel">RDT + Microscopy</div>
+                </div>
+                <div class="stat-card positive">
+                    <div class="stat-label">Confirmed Positive</div>
+                    <div class="stat-value">${stats.positive.toLocaleString()}</div>
+                    <div class="stat-sublabel">${positivityRate}% positivity rate</div>
+                </div>
+                <div class="stat-card treated">
+                    <div class="stat-label">Treated with ACT</div>
+                    <div class="stat-value">${stats.treated.toLocaleString()}</div>
+                    <div class="stat-sublabel">Anti-malarial treatment</div>
+                </div>
+                <div class="stat-card deaths">
+                    <div class="stat-label">Malaria Deaths</div>
+                    <div class="stat-value">${stats.deaths.toLocaleString()}</div>
+                    <div class="stat-sublabel">All age groups</div>
+                </div>
+                <div class="stat-card admissions">
+                    <div class="stat-label">Hospital Admissions</div>
+                    <div class="stat-value">${stats.admissions.toLocaleString()}</div>
+                    <div class="stat-sublabel">Severe malaria cases</div>
+                </div>
+            `;
+        }
+
+        function updateCharts() {
+            updateRegionChart();
+            updateTestingChart();
+            updateAgeChart();
+            updateTreatmentChart();
+        }
+
+        function updateRegionChart() {
+            const regionData = {};
+            
+            filteredData.forEach(row => {
+                const region = row.Region || 'Unknown';
+                if (!regionData[region]) regionData[region] = 0;
+                
+                regionData[region] += (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
+                                     (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
+                                     (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0);
+            });
+
+            if (charts.regionChart) charts.regionChart.destroy();
+            
+            const ctx = document.getElementById('regionChart').getContext('2d');
+            charts.regionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(regionData),
+                    datasets: [{
+                        label: 'Confirmed Malaria Cases',
+                        data: Object.values(regionData),
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        },
+                        x: { 
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTestingChart() {
+            let tested = 0, positive = 0;
+            
+            filteredData.forEach(row => {
+                const testedRow = (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Negative 0-59m'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Negative 5-14y'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Negative 15+y'] || 0);
+                
+                const positiveRow = (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
+                                   (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
+                                   (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0);
+                
+                tested += testedRow;
+                positive += positiveRow;
+            });
+
+            const negative = tested - positive;
+
+            if (charts.testingChart) charts.testingChart.destroy();
+            
+            const ctx = document.getElementById('testingChart').getContext('2d');
+            charts.testingChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positive', 'Negative'],
+                    datasets: [{
+                        data: [positive, negative],
+                        backgroundColor: ['rgba(239, 68, 68, 0.7)', 'rgba(16, 185, 129, 0.7)'],
+                        borderColor: ['rgba(239, 68, 68, 1)', 'rgba(16, 185, 129, 1)'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateAgeChart() {
+            let age0_59m = 0, age5_14y = 0, age15plus = 0;
+            
+            filteredData.forEach(row => {
+                age0_59m += (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0);
+                age5_14y += (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0);
+                age15plus += (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0);
+            });
+
+            if (charts.ageChart) charts.ageChart.destroy();
+            
+            const ctx = document.getElementById('ageChart').getContext('2d');
+            charts.ageChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['0-59 months', '5-14 years', '15+ years'],
+                    datasets: [{
+                        data: [age0_59m, age5_14y, age15plus],
+                        backgroundColor: [
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(139, 92, 246, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(139, 92, 246, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTreatmentChart() {
+            let under24h = 0, over24h = 0;
+            
+            filteredData.forEach(row => {
+                under24h += (row['Malaria treated with ACT <24 hours 0-59m'] || 0) +
+                           (row['Malaria treated with ACT <24 hours 5-14y'] || 0) +
+                           (row['Malaria treated with ACT <24 hours 15+y'] || 0);
+                
+                over24h += (row['Malaria treated with ACT >24 hours 0-59m'] || 0) +
+                          (row['Malaria treated with ACT >24 hours 5-14y'] || 0) +
+                          (row['Malaria treated with ACT >24 hours 15+y'] || 0);
+            });
+
+            if (charts.treatmentChart) charts.treatmentChart.destroy();
+            
+            const ctx = document.getElementById('treatmentChart').getContext('2d');
+            charts.treatmentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Treatment Timeliness'],
+                    datasets: [
+                        {
+                            label: 'Treated <24 hours',
+                            data: [under24h],
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Treated >24 hours',
+                            data: [over24h],
+                            backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                            borderColor: 'rgba(245, 158, 11, 1)',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        },
+                        x: { 
+                            ticks: { color: '#94a3b8' },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTable() {
+            const facilityStats = {};
+            
+            filteredData.forEach(row => {
+                const facility = row['Health Facility'] || 'Unknown';
+                
+                if (!facilityStats[facility]) {
+                    facilityStats[facility] = {
+                        chiefdom: row.Chiefdom,
+                        district: row.District,
+                        suspected: 0,
+                        tested: 0,
+                        positive: 0,
+                        treated: 0,
+                        deaths: 0
+                    };
+                }
+                
+                const stats = facilityStats[facility];
+                
+                stats.suspected += (row['Fever case - suspected Malaria 0-59m'] || 0) +
+                                  (row['Fever case - suspected Malaria 5-14y'] || 0) +
+                                  (row['Fever case - suspected Malaria 15+y'] || 0);
+                
+                stats.tested += (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Negative 0-59m'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Negative 5-14y'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0) +
+                               (row['Fever case tested for Malaria (RDT) - Negative 15+y'] || 0);
+                
+                stats.positive += (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
+                                 (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0);
+                
+                stats.treated += (row['Malaria treated with ACT <24 hours 0-59m'] || 0) +
+                                (row['Malaria treated with ACT >24 hours 0-59m'] || 0) +
+                                (row['Malaria treated with ACT <24 hours 5-14y'] || 0) +
+                                (row['Malaria treated with ACT >24 hours 5-14y'] || 0) +
+                                (row['Malaria treated with ACT <24 hours 15+y'] || 0) +
+                                (row['Malaria treated with ACT >24 hours 15+y'] || 0);
+                
+                stats.deaths += (row['Child death - Malaria 1-59m'] || 0) +
+                               (row['Child death - Malaria 5-9y'] || 0) +
+                               (row['Child death - Malaria 10-14y'] || 0) +
+                               (row['Death malaria 15+ years Female'] || 0) +
+                               (row['Death malaria 15+ years Male'] || 0);
+            });
+
+            const tbody = document.getElementById('facilityTableBody');
+            tbody.innerHTML = '';
+            
+            Object.entries(facilityStats)
+                .sort((a, b) => b[1].positive - a[1].positive)
+                .forEach(([facility, stats]) => {
+                    const positivity = stats.tested > 0 ? ((stats.positive / stats.tested) * 100).toFixed(1) : 0;
+                    
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td><strong>${facility}</strong></td>
+                        <td>${stats.chiefdom || '-'}</td>
+                        <td>${stats.district || '-'}</td>
+                        <td>${stats.suspected.toLocaleString()}</td>
+                        <td>${stats.tested.toLocaleString()}</td>
+                        <td><strong style="color: #ef4444;">${stats.positive.toLocaleString()}</strong></td>
+                        <td style="color: #10b981;">${stats.treated.toLocaleString()}</td>
+                        <td style="color: #8b5cf6;">${stats.deaths.toLocaleString()}</td>
+                        <td><strong>${positivity}%</strong></td>
+                    `;
+                });
+        }
+
+        // Auto-load data when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            loadData();
+        });
+
+        // Auto-refresh data every 5 minutes
+        setInterval(loadData, 300000);
+    </script>
+</body>
+</html>
