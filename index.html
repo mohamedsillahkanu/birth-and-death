@@ -63,35 +63,6 @@
             font-size: 16px;
         }
 
-        .load-section {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-
-        .load-button {
-            width: 100%;
-            background: linear-gradient(135deg, #10b981, #3b82f6);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .load-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
-        }
-
         .filters {
             background: rgba(30, 41, 59, 0.8);
             backdrop-filter: blur(10px);
@@ -306,13 +277,6 @@
             <h1 class="title">Sierra Leone Malaria Surveillance Dashboard</h1>
             <p class="subtitle">Real-time analysis from Google Sheets | Region → District → Chiefdom → Facility</p>
             <p id="lastUpdated" style="color: #64748b; font-size: 12px; margin-top: 10px;"></p>
-            <div style="margin-top: 20px; background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(59, 130, 246, 0.3);">
-                <p style="color: #3b82f6; font-size: 13px; font-weight: 600; margin-bottom: 8px;">⚠️ Important: Download Required</p>
-                <p style="color: #94a3b8; font-size: 12px; line-height: 1.6;">
-                    This dashboard cannot fetch data directly in the Claude.ai browser environment due to security restrictions.
-                    <br><strong>Solution:</strong> Download this HTML file and open it in your browser (Chrome, Firefox, Edge) - it will work perfectly!
-                </p>
-            </div>
         </div>
 
         <div id="content" style="display: none;">
@@ -391,7 +355,7 @@
             </div>
         </div>
 
-        <div id="loading" class="loading" style="display: none;">
+        <div id="loading" class="loading">
             <div class="loading-spinner"></div>
             <p>Loading data from Google Sheets...</p>
         </div>
@@ -403,63 +367,11 @@
         let charts = {};
 
         // Google Apps Script Web App URL
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxA3n0W05nn16Qvu_qZHcx48AU0C2wpWqCM2j61xRBEaaH89ixD1VUXhLTXbUFfOKvOPA/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdctHoJ6ntizsjpbI4MFw7EZClCztb_2HDnY3kpfuqLm3Mu-yr0fYGMcfkb4o_H9cdxg/exec';
         
         async function loadData() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('content').style.display = 'none';
-
-            if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-                document.getElementById('loading').innerHTML = `
-                    <div class="error">
-                        <h3>Google Apps Script Setup Required</h3>
-                        <p style="margin-bottom: 20px;">Direct Google Sheets access is blocked by browser security. You need to create a Google Apps Script web app.</p>
-                        
-                        <div style="text-align: left; max-width: 700px; margin: 0 auto; background: rgba(15, 23, 42, 0.8); padding: 20px; border-radius: 10px;">
-                            <p style="font-weight: 700; color: #10b981; margin-bottom: 15px;">📋 Setup Instructions:</p>
-                            
-                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 1:</strong> Open your Google Sheet</p>
-                            <p style="margin-bottom: 15px; font-size: 13px;">Go to: Extensions → Apps Script</p>
-                            
-                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 2:</strong> Delete existing code and paste this:</p>
-                            <pre style="background: #0a0e27; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 11px; line-height: 1.5; margin-bottom: 15px;"><code>function doGet() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const rows = data.slice(1);
-  
-  const jsonData = rows.map(row => {
-    const obj = {};
-    headers.forEach((header, i) => {
-      obj[header] = row[i];
-    });
-    return obj;
-  });
-  
-  return ContentService.createTextOutput(JSON.stringify(jsonData))
-    .setMimeType(ContentService.MimeType.JSON);
-}</code></pre>
-                            
-                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 3:</strong> Deploy the web app</p>
-                            <ul style="font-size: 12px; line-height: 1.8; padding-left: 20px; margin-bottom: 15px;">
-                                <li>Click "Deploy" → "New deployment"</li>
-                                <li>Click gear icon → Select "Web app"</li>
-                                <li>Description: "Malaria Data API"</li>
-                                <li>Execute as: "Me"</li>
-                                <li>Who has access: "Anyone"</li>
-                                <li>Click "Deploy"</li>
-                            </ul>
-                            
-                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 4:</strong> Copy the Web App URL</p>
-                            <p style="font-size: 12px; margin-bottom: 15px;">It looks like: https://script.google.com/macros/s/...</p>
-                            
-                            <p style="margin-bottom: 10px; font-size: 13px;"><strong>Step 5:</strong> Update the dashboard</p>
-                            <p style="font-size: 12px;">Replace 'YOUR_APPS_SCRIPT_URL_HERE' in the dashboard code with your URL</p>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
 
             try {
                 const response = await fetch(APPS_SCRIPT_URL);
@@ -481,10 +393,9 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
                 
-                // Update last updated timestamp
                 const now = new Date();
                 document.getElementById('lastUpdated').textContent = 
-                    `Last updated: ${now.toLocaleString()} | ${rawData.length} records loaded from Google Sheets`;
+                    `Last updated: ${now.toLocaleString()} | ${rawData.length} records loaded`;
                 
             } catch (error) {
                 console.error('Error:', error);
@@ -497,38 +408,16 @@
                             <p style="font-size: 13px; margin-bottom: 10px;"><strong>Troubleshooting:</strong></p>
                             <ol style="font-size: 12px; line-height: 1.8; padding-left: 20px;">
                                 <li>Check that you've deployed the Google Apps Script web app</li>
-                                <li>Verify the URL is correct (should start with https://script.google.com/macros/s/)</li>
+                                <li>Verify the URL is correct</li>
                                 <li>Make sure "Who has access" is set to "Anyone"</li>
                                 <li>Wait 1-2 minutes after deploying for changes to take effect</li>
                             </ol>
                         </div>
                         
-                        <button class="load-button" style="margin-top: 20px; width: auto; padding: 12px 30px;" onclick="loadData()">Try Again</button>
+                        <button class="load-button" style="margin-top: 20px; width: auto; padding: 12px 30px; background: linear-gradient(135deg, #10b981, #3b82f6); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer;" onclick="loadData()">Try Again</button>
                     </div>
                 `;
             }
-        }
-
-        function parseCSV(csv) {
-            const lines = csv.split('\n');
-            const headers = lines[0].split(',').map(h => h.trim());
-            const data = [];
-
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-                
-                const values = lines[i].split(',');
-                const row = {};
-                
-                headers.forEach((header, index) => {
-                    const value = values[index] ? values[index].trim() : '';
-                    row[header] = isNaN(value) || value === '' ? value : Number(value);
-                });
-                
-                data.push(row);
-            }
-
-            return data;
         }
 
         function populateFilters() {
@@ -597,12 +486,10 @@
             };
 
             filteredData.forEach(row => {
-                // Suspected cases (all age groups)
                 stats.suspected += (row['Fever case - suspected Malaria 0-59m'] || 0) +
                                   (row['Fever case - suspected Malaria 5-14y'] || 0) +
                                   (row['Fever case - suspected Malaria 15+y'] || 0);
 
-                // Tested (RDT + Microscopy, all age groups)
                 stats.tested += (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
                                (row['Fever case tested for Malaria (RDT) - Negative 0-59m'] || 0) +
                                (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
@@ -610,12 +497,10 @@
                                (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0) +
                                (row['Fever case tested for Malaria (RDT) - Negative 15+y'] || 0);
 
-                // Positive cases
                 stats.positive += (row['Fever case tested for Malaria (RDT) - Positive 0-59m'] || 0) +
                                  (row['Fever case tested for Malaria (RDT) - Positive 5-14y'] || 0) +
                                  (row['Fever case tested for Malaria (RDT) - Positive 15+y'] || 0);
 
-                // Treated
                 stats.treated += (row['Malaria treated with ACT <24 hours 0-59m'] || 0) +
                                 (row['Malaria treated with ACT >24 hours 0-59m'] || 0) +
                                 (row['Malaria treated with ACT <24 hours 5-14y'] || 0) +
@@ -623,14 +508,12 @@
                                 (row['Malaria treated with ACT <24 hours 15+y'] || 0) +
                                 (row['Malaria treated with ACT >24 hours 15+y'] || 0);
 
-                // Deaths
                 stats.deaths += (row['Child death - Malaria 1-59m'] || 0) +
                                (row['Child death - Malaria 5-9y'] || 0) +
                                (row['Child death - Malaria 10-14y'] || 0) +
                                (row['Death malaria 15+ years Female'] || 0) +
                                (row['Death malaria 15+ years Male'] || 0);
 
-                // Admissions
                 stats.admissions += (row['Admission - Child with malaria 0-59 months'] || 0) +
                                    (row['Admission - Child with malaria 5-14 years'] || 0) +
                                    (row['Admission - Malaria 15+ years'] || 0);
@@ -952,12 +835,10 @@
                 });
         }
 
-        // Auto-load data when page loads
         window.addEventListener('DOMContentLoaded', function() {
             loadData();
         });
 
-        // Auto-refresh data every 5 minutes
         setInterval(loadData, 300000);
     </script>
 </body>
