@@ -20,9 +20,183 @@
             min-height: 100vh;
         }
 
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 50px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+
+        .logo-box {
+            width: 120px;
+            height: 120px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .logo-box:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+            transform: scale(1.05);
+        }
+
+        .logo-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .login-form-group {
+            margin-bottom: 25px;
+        }
+
+        .login-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #e6edf3;
+            font-size: 14px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            color: #e6edf3;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+        }
+
+        .login-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
+        }
+
+        .logout-container {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: #8b949e;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: #3b82f6;
+            color: #e6edf3;
         }
 
         .header {
@@ -115,6 +289,23 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .form-group {
@@ -252,16 +443,6 @@
             color: #ef4444;
         }
 
-        .info-box {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #3b82f6;
-            font-size: 13px;
-        }
-
         .section-title {
             font-size: 18px;
             font-weight: 700;
@@ -272,6 +453,19 @@
         }
 
         @media (max-width: 600px) {
+            .login-card {
+                padding: 30px;
+            }
+
+            .logo-container {
+                flex-direction: column;
+            }
+
+            .logo-box {
+                width: 100px;
+                height: 100px;
+            }
+
             .form-tabs {
                 flex-direction: column;
             }
@@ -287,20 +481,51 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="logo-container">
+                <div class="logo-box">
+                    <img src="NMCP.png" alt="NMCP Logo" class="logo-img">
+                </div>
+                <div class="logo-box">
+                    <img src="ICF-SL.jpg" alt="ICF Logo" class="logo-img">
+                </div>
+            </div>
+
+            <div class="login-header">
+                <h1>CRVS Data Collection</h1>
+                <p>Civil Registration & Vital Statistics</p>
+            </div>
+
+            <div class="login-error" id="loginError">Invalid username or password</div>
+
+            <form id="loginForm">
+                <div class="login-form-group">
+                    <label class="login-label">Username</label>
+                    <input type="text" class="login-input" id="username" required autocomplete="username">
+                </div>
+
+                <div class="login-form-group">
+                    <label class="login-label">Password</label>
+                    <input type="password" class="login-input" id="password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container" id="mainContent" style="display: none;">
+        <div class="logout-container">
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+
         <div class="header">
             <div class="logo">CRVS</div>
             <h1 class="title">Data Collection Form</h1>
             <p class="subtitle">Civil Registration & Vital Statistics</p>
-        </div>
-
-        <div class="info-box">
-            <strong>Setup Required:</strong> Before using this form, you need to:
-            <ol style="margin-top: 10px; margin-left: 20px;">
-                <li>Create a Google Apps Script Web App</li>
-                <li>Set up your Google Sheet with appropriate columns</li>
-                <li>Replace the SCRIPT_URL below with your deployment URL</li>
-            </ol>
         </div>
 
         <div class="success-message" id="successMessage">
@@ -325,10 +550,11 @@
                     <label class="form-label">Region<span class="required">*</span></label>
                     <select class="form-select" name="region" required>
                         <option value="">Select Region</option>
-                        <option value="Northern">Northern Region</option>
-                        <option value="Southern">Southern Region</option>
-                        <option value="Eastern">Eastern Region</option>
-                        <option value="Western">Western Area</option>
+                        <option value="Eastern Region">Eastern Region</option>
+                        <option value="Northern Region">Northern Region</option>
+                        <option value="North West Region">North West Region</option>
+                        <option value="Southern Region">Southern Region</option>
+                        <option value="Western Area">Western Area</option>
                     </select>
                 </div>
 
@@ -336,22 +562,22 @@
                     <label class="form-label">District<span class="required">*</span></label>
                     <select class="form-select" name="district" required>
                         <option value="">Select District</option>
-                        <option value="Western Area Urban">Western Area Urban</option>
-                        <option value="Western Area Rural">Western Area Rural</option>
-                        <option value="Bo">Bo</option>
-                        <option value="Kenema">Kenema</option>
-                        <option value="Kailahun">Kailahun</option>
-                        <option value="Bombali">Bombali</option>
-                        <option value="Kambia">Kambia</option>
-                        <option value="Port Loko">Port Loko</option>
-                        <option value="Tonkolili">Tonkolili</option>
-                        <option value="Kono">Kono</option>
-                        <option value="Bonthe">Bonthe</option>
-                        <option value="Moyamba">Moyamba</option>
-                        <option value="Pujehun">Pujehun</option>
-                        <option value="Koinadugu">Koinadugu</option>
-                        <option value="Falaba">Falaba</option>
-                        <option value="Karene">Karene</option>
+                        <option value="Western Area Urban">Western Area Urban District</option>
+                        <option value="Western Area Rural">Western Area Rural District</option>
+                        <option value="Bo">Bo District</option>
+                        <option value="Kenema">Kenema District</option>
+                        <option value="Kailahun">Kailahun District</option>
+                        <option value="Bombali">Bombali District</option>
+                        <option value="Kambia">Kambia District</option>
+                        <option value="Port Loko">Port Loko District</option>
+                        <option value="Tonkolili">Tonkolili District</option>
+                        <option value="Kono">Kono District</option>
+                        <option value="Bonthe">Bonthe District</option>
+                        <option value="Moyamba">Moyamba District</option>
+                        <option value="Pujehun">Pujehun District</option>
+                        <option value="Koinadugu">Koinadugu District</option>
+                        <option value="Falaba">Falaba District</option>
+                        <option value="Karene">Karene District</option>
                     </select>
                 </div>
             </div>
@@ -469,10 +695,11 @@
                     <label class="form-label">Region<span class="required">*</span></label>
                     <select class="form-select" name="region" required>
                         <option value="">Select Region</option>
-                        <option value="Northern">Northern Region</option>
-                        <option value="Southern">Southern Region</option>
-                        <option value="Eastern">Eastern Region</option>
-                        <option value="Western">Western Area</option>
+                        <option value="Eastern Region">Eastern Region</option>
+                        <option value="Northern Region">Northern Region</option>
+                        <option value="North West Region">North West Region</option>
+                        <option value="Southern Region">Southern Region</option>
+                        <option value="Western Area">Western Area</option>
                     </select>
                 </div>
 
@@ -480,12 +707,12 @@
                     <label class="form-label">District<span class="required">*</span></label>
                     <select class="form-select" name="district" required>
                         <option value="">Select District</option>
-                        <option value="Western Area Urban">Western Area Urban</option>
-                        <option value="Western Area Rural">Western Area Rural</option>
-                        <option value="Bo">Bo</option>
-                        <option value="Kenema">Kenema</option>
-                        <option value="Kailahun">Kailahun</option>
-                        <option value="Bombali">Bombali</option>
+                        <option value="Western Area Urban">Western Area Urban District</option>
+                        <option value="Western Area Rural">Western Area Rural District</option>
+                        <option value="Bo">Bo District</option>
+                        <option value="Kenema">Kenema District</option>
+                        <option value="Kailahun">Kailahun District</option>
+                        <option value="Bombali">Bombali District</option>
                     </select>
                 </div>
             </div>
@@ -603,61 +830,141 @@
 
             <button type="submit" class="submit-btn">Submit Death Registration</button>
         </form>
-
-        <!-- Facility Report Form -->
-        <form id="facilityForm" class="form-section">
-            <div class="section-title" style="display: none;">Monthly Facility Report</div>
-            <!-- This form is hidden - facility data is auto-populated from birth/death registrations -->
-        </form>
     </div>
 
     <script>
         // IMPORTANT: Replace this URL with your Google Apps Script Web App URL
         const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+        
+        // Login credentials
+        const LOGIN_USERNAME = 'admin';
+        const LOGIN_PASSWORD = 'admin123';
 
-        // Chiefdom data by district
-        const chiefdomData = {
-            'Western Area Urban': ['East I', 'East II', 'East III', 'West I', 'West II', 'West III', 'Central I', 'Central II'],
-            'Western Area Rural': ['Waterloo Zone', 'Kaffu Bullom', 'Koya', 'Kossoh Town Zone'],
-            'Bo': ['Badjia', 'Bagbo', 'Bagbwe', 'Baoma', 'Bumpe Ngao', 'Jaiama-Bongor', 'Kakua', 'Komboya', 'Lugbu', 'Niawa Lenga', 'Selenga', 'Tikonko', 'Valunia', 'Wunde'],
-            'Kenema': ['Dama', 'Dodo', 'Gaura', 'Gorama Mende', 'Kandu-Leppiama', 'Koya', 'Lower Bambara', 'Malegohun', 'Nomo', 'Nongowa', 'Simbaru', 'Small Bo', 'Tunkia', 'Upper Bambara', 'Wandor'],
-            'Kailahun': ['Dea', 'Jawei', 'Kissi Kama', 'Kissi Teng', 'Kissi Tongi', 'Luawa', 'Malema', 'Mandu', 'Njaluahun', 'Peje Bongre', 'Peje West', 'Penguia', 'Upper Bambara', 'Yawei'],
-            'Bombali': ['Bombali Shebora', 'Gbanti Kamaranka', 'Gbendembu Ngowahun', 'Libeisaygahun', 'Magbaimba Ndowahun', 'Makari Gbanti', 'Paki Masabong', 'Safroko Limba', 'Sella Limba', 'Tambakha'],
-            'Kambia': ['Bramaia', 'Gbinleh Dixon', 'Magbema', 'Mambolo', 'Masungbala', 'Samu', 'Tonko Limba'],
-            'Port Loko': ['Buya Romende', 'Dibia', 'Kaffu Bullom', 'Koya', 'Lokomasama', 'Maforki', 'Marampa', 'Masimera', 'TMS', 'Tinkatupa Makontho'],
-            'Tonkolili': ['Gbonkolenken', 'Kalansongoia', 'Kholifa Mabang', 'Kholifa Rowala', 'Kunike', 'Kunike Barina', 'Malal Mara', 'Sambaia', 'Tane', 'Yoni'],
-            'Kono': ['Fiama', 'Gbane', 'Gbane Kandor', 'Gbense', 'Gorama Kono', 'Kamara', 'Lei', 'Mafindor', 'Nimikoro', 'Nimiyama', 'Sandor', 'Soa', 'Tankoro', 'Toli'],
-            'Bonthe': ['Bendu Cha', 'Bum', 'Dema', 'Imperri', 'Jong', 'Kpanda Kemo', 'Kwamabai Krim', 'Nongoba Bullom', 'Sittia', 'Sogbini', 'Yawbeko'],
-            'Moyamba': ['Bagruwa', 'Bumpeh', 'Dasse', 'Fakunya', 'Kagboro', 'Kaiyamba', 'Kamajei', 'Kori', 'Kowa', 'Lower Banta', 'Ribbi', 'Timdale', 'Upper Banta'],
-            'Pujehun': ['Barri', 'Galliness-Perri', 'Kpaka', 'Makpele', 'Malen', 'Panga Kabonde', 'Panga Krim', 'Soro-Gbema', 'Sorogbeima', 'Yakemur'],
-            'Koinadugu': ['Dembelia Sinkunia', 'Folasaba', 'Kasunko', 'Mongo', 'Neini', 'Nieni', 'Sengbeh', 'Sulima', 'Wara Wara Bafodia', 'Wara Wara Yagala'],
-            'Falaba': ['Mongo', 'Sulima', 'Wara Wara Bafodia'],
-            'Karene': ['Dibia', 'Libeisaygahun', 'Sella Limba', 'Tambakha']
-        };
+        // Cascading data in pipe-delimited format
+        const CASCADING_DATA = `Eastern Region||Kailahun District
+Eastern Region||Kenema District
+Eastern Region||Kono District
+Northern Region||Bombali District
+Northern Region||Tonkolili District
+North West Region||Kambia District
+North West Region||Port Loko District
+Southern Region||Bo District
+Southern Region||Bonthe District
+Southern Region||Moyamba District
+Western Area||Western Area Urban District
+Western Area||Western Area Rural District
+Bo District||Bo City
+Bo District||Badjia Chiefdom
+Bo District||Bumpe Ngao Chiefdom
+Bo District||Kakua Chiefdom
+Bombali District||Makeni City
+Bombali District||Bombali Sebora Chiefdom
+Bombali District||Safroko Limba Chiefdom
+Kenema District||Kenema City
+Kenema District||Dama Chiefdom
+Kenema District||Nongowa Chiefdom
+Kono District||Koidu New Sembehun City
+Kono District||Sandor Chiefdom
+Western Area Urban District||Central 1 Zone
+Western Area Urban District||East 1 Zone
+Western Area Urban District||West 1 Zone
+Western Area Rural District||Waterloo Rural Zone
+Western Area Rural District||York Rural Zone
+Bo City||Bo Government Hospital
+Bo City||Kakua Static CHC
+Bo City||Manjiama CHC
+Badjia Chiefdom||Ngelehun CHC
+Badjia Chiefdom||Njandama MCHP
+Bumpe Ngao Chiefdom||Bumpe CHC
+Bumpe Ngao Chiefdom||Serabu Mission Hospital
+Kakua Chiefdom||Bo Childrens Hospital
+Kakua Chiefdom||Gender CHP
+Makeni City||Makeni Government Hospital
+Makeni City||Holy Spirit Hospital
+Bombali Sebora Chiefdom||Patebana CHC
+Safroko Limba Chiefdom||Binkolo CHC
+Kenema City||Kenema Government Hospital
+Kenema City||Ahmadiyya Muslim Hospital
+Dama Chiefdom||Kpandebu CHC
+Nongowa Chiefdom||Largo CHC
+Koidu New Sembehun City||Koidu Government Hospital
+Sandor Chiefdom||Kayima CHC
+Central 1 Zone||Macauley Street Government Hospital
+East 1 Zone||Princess Christian Maternity Hospital
+West 1 Zone||Grey Bush CHC
+Waterloo Rural Zone||Waterloo CHC
+Waterloo Rural Zone||Waterloo Rural Community Hospital
+York Rural Zone||Lakka Government Hospital`;
 
-        // Health facilities by chiefdom (sample data - expand as needed)
-        const facilitiesByChiefdom = {
-            'East I': ['Connaught Hospital', 'Rokupa Government Hospital', 'PCM Health Centre', 'Murray Town CHC'],
-            'East II': ['Princess Christian Maternity Hospital', 'Kissy Community Health Centre', 'Kissy Dockyard CHP'],
-            'East III': ['Military Hospital Wilberforce', 'Circular Road CHC', 'Congo Cross CHP'],
-            'West I': ['Lumley Government Hospital', 'Aberdeen Women\'s Centre', 'Lumley CHC'],
-            'West II': ['Juba CHC', 'Leicester Peak CHP', 'Hill Station MCHP'],
-            'West III': ['Goderich CHC', 'Hamilton CHP', 'Tokeh MCHP'],
-            'Central I': ['Emergency Hospital', 'Central Health Centre', 'Tower Hill CHC'],
-            'Central II': ['Brookfields CHC', 'Wilberforce CHC', 'Magazine CHP'],
-            'Waterloo Zone': ['Waterloo Hospital', 'Waterloo CHC', 'Hastings MCHP'],
-            'Kaffu Bullom': ['Port Loko Government Hospital', 'Kaffu Bullom CHC'],
-            'Badjia': ['Badjia CHC', 'Badjia MCHP'],
-            'Bumpe Ngao': ['Bumpe CHC', 'Ngao MCHP'],
-            'Kakua': ['Kakua CHC', 'Kakua MCHP'],
-            'Dama': ['Dama CHC', 'Dama MCHP'],
-            'Nongowa': ['Nongowa CHC', 'Nongowa MCHP'],
-            'Gorama Mende': ['Gorama CHC', 'Gorama MCHP'],
-            'Bombali Shebora': ['Makeni Government Hospital', 'Makeni CHC', 'Masuba MCHP'],
-            'Safroko Limba': ['Makump CHC', 'Safroko MCHP']
-        };
+        // Parse cascading data
+        let regionDistrictMap = {};
+        let districtChiefdomMap = {};
+        let chiefdomFacilityMap = {};
 
-        // Toggle facility fields based on whether born in HF
+        function parseCascadingData() {
+            const lines = CASCADING_DATA.trim().split('\n');
+            
+            lines.forEach(line => {
+                const parts = line.split('||');
+                if (parts.length === 2) {
+                    const [parent, child] = parts.map(s => s.trim());
+                    
+                    if (parent.includes('Region') || parent === 'Western Area') {
+                        if (!regionDistrictMap[parent]) {
+                            regionDistrictMap[parent] = [];
+                        }
+                        if (!regionDistrictMap[parent].includes(child)) {
+                            regionDistrictMap[parent].push(child);
+                        }
+                    }
+                    else if (child.includes('Chiefdom') || child.includes('City') || child.includes('Zone')) {
+                        if (!districtChiefdomMap[parent]) {
+                            districtChiefdomMap[parent] = [];
+                        }
+                        if (!districtChiefdomMap[parent].includes(child)) {
+                            districtChiefdomMap[parent].push(child);
+                        }
+                    }
+                    else {
+                        if (!chiefdomFacilityMap[parent]) {
+                            chiefdomFacilityMap[parent] = [];
+                        }
+                        if (!chiefdomFacilityMap[parent].includes(child)) {
+                            chiefdomFacilityMap[parent].push(child);
+                        }
+                    }
+                }
+            });
+        }
+
+        parseCascadingData();
+
+        // Login handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('loginError');
+            
+            if (username === LOGIN_USERNAME && password === LOGIN_PASSWORD) {
+                errorDiv.classList.remove('show');
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else {
+                errorDiv.classList.add('show');
+            }
+        });
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
+
+        // Toggle facility fields
         function toggleFacilityFields(show) {
             const facilityGroup = document.getElementById('facilityFieldsGroup');
             const facilitySelect = document.querySelector('select[name="facilityFromList"]');
@@ -676,13 +983,12 @@
             }
         }
 
-        // Check if "Other" is selected in facility dropdown
+        // Check if "Other" facility is selected
         function checkOtherFacility(selectElement) {
             const otherGroup = document.getElementById('otherFacilityGroup');
             const otherInput = document.getElementById('facilityOtherInput');
-            const selectedValue = selectElement.value;
             
-            if (selectedValue === 'Other') {
+            if (selectElement.value === 'Other') {
                 otherGroup.style.display = 'block';
                 otherInput.required = true;
             } else {
@@ -692,51 +998,44 @@
             }
         }
 
-        // Populate chiefdom dropdown based on district selection
-        function setupCascadingDropdowns(districtSelectName, chiefdomSelectId) {
-            const districtSelect = document.querySelector(`select[name="${districtSelectName}"]`);
-            const chiefdomSelect = document.getElementById(chiefdomSelectId);
-
-            districtSelect.addEventListener('change', function() {
-                const selectedDistrict = this.value;
-                chiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
-                
-                if (selectedDistrict && chiefdomData[selectedDistrict]) {
-                    chiefdomData[selectedDistrict].forEach(chiefdom => {
-                        const option = document.createElement('option');
-                        option.value = chiefdom;
-                        option.textContent = chiefdom;
-                        chiefdomSelect.appendChild(option);
-                    });
-                    chiefdomSelect.disabled = false;
-                } else {
-                    chiefdomSelect.innerHTML = '<option value="">First select a district</option>';
-                    chiefdomSelect.disabled = true;
-                }
-            });
-        }
-
-        // Initialize cascading dropdowns for both forms
-        setupCascadingDropdowns('district', 'birthChiefdom');
-        
-        // Birth form - also populate facilities when chiefdom changes
+        // Setup cascading for birth form
         const birthForm = document.getElementById('birthForm');
+        const birthDistrictSelect = birthForm.querySelector('select[name="district"]');
         const birthChiefdomSelect = document.getElementById('birthChiefdom');
         const birthFacilitySelect = document.getElementById('birthFacilitySelect');
+        
+        birthDistrictSelect.addEventListener('change', function() {
+            const selectedDistrict = this.value;
+            birthChiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
+            birthFacilitySelect.innerHTML = '<option value="">First select chiefdom</option>';
+            birthFacilitySelect.disabled = true;
+            
+            if (selectedDistrict && districtChiefdomMap[selectedDistrict]) {
+                districtChiefdomMap[selectedDistrict].forEach(chiefdom => {
+                    const option = document.createElement('option');
+                    option.value = chiefdom;
+                    option.textContent = chiefdom;
+                    birthChiefdomSelect.appendChild(option);
+                });
+                birthChiefdomSelect.disabled = false;
+            } else {
+                birthChiefdomSelect.innerHTML = '<option value="">First select a district</option>';
+                birthChiefdomSelect.disabled = true;
+            }
+        });
         
         birthChiefdomSelect.addEventListener('change', function() {
             const selectedChiefdom = this.value;
             birthFacilitySelect.innerHTML = '<option value="">Select Health Facility</option>';
             
-            if (selectedChiefdom && facilitiesByChiefdom[selectedChiefdom]) {
-                facilitiesByChiefdom[selectedChiefdom].forEach(facility => {
+            if (selectedChiefdom && chiefdomFacilityMap[selectedChiefdom]) {
+                chiefdomFacilityMap[selectedChiefdom].forEach(facility => {
                     const option = document.createElement('option');
                     option.value = facility;
                     option.textContent = facility;
                     birthFacilitySelect.appendChild(option);
                 });
                 
-                // Add "Other" option
                 const otherOption = document.createElement('option');
                 otherOption.value = 'Other';
                 otherOption.textContent = '-- Other (Type facility name) --';
@@ -744,12 +1043,12 @@
                 
                 birthFacilitySelect.disabled = false;
             } else {
-                birthFacilitySelect.innerHTML = '<option value="">Select chiefdom first to see facilities</option>';
+                birthFacilitySelect.innerHTML = '<option value="">Select chiefdom first</option>';
                 birthFacilitySelect.disabled = true;
             }
         });
-        
-        // For death form - need to find the district select differently
+
+        // Setup cascading for death form
         const deathForm = document.getElementById('deathForm');
         const deathDistrictSelect = deathForm.querySelector('select[name="district"]');
         const deathChiefdomSelect = document.getElementById('deathChiefdom');
@@ -758,8 +1057,8 @@
             const selectedDistrict = this.value;
             deathChiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
             
-            if (selectedDistrict && chiefdomData[selectedDistrict]) {
-                chiefdomData[selectedDistrict].forEach(chiefdom => {
+            if (selectedDistrict && districtChiefdomMap[selectedDistrict]) {
+                districtChiefdomMap[selectedDistrict].forEach(chiefdom => {
                     const option = document.createElement('option');
                     option.value = chiefdom;
                     option.textContent = chiefdom;
@@ -804,7 +1103,7 @@
             document.getElementById('successMessage').style.display = 'none';
         }
 
-        // Form submission handler
+        // Form submission handlers
         function handleSubmit(formId, sheetName) {
             const form = document.getElementById(formId);
             
@@ -822,12 +1121,10 @@
                         timestamp: new Date().toISOString()
                     };
 
-                    // Convert FormData to object
                     for (let [key, value] of formData.entries()) {
                         data[key] = value;
                     }
 
-                    // Special handling for birth form - combine facility fields
                     if (formId === 'birthForm') {
                         const bornInHF = data.bornInHF;
                         if (bornInHF === 'Yes') {
@@ -843,12 +1140,10 @@
                             data.facility = 'Not in Health Facility';
                         }
                         
-                        // Clean up temporary fields
                         delete data.facilityFromList;
                         delete data.facilityOther;
                     }
 
-                    // Check if URL is configured
                     if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
                         throw new Error('Please configure your Google Apps Script URL first');
                     }
@@ -862,8 +1157,6 @@
                         body: JSON.stringify(data)
                     });
 
-                    // Note: no-cors mode doesn't allow reading response
-                    // We'll assume success if no error thrown
                     showSuccess();
                     form.reset();
 
@@ -873,17 +1166,14 @@
                 }
 
                 submitBtn.disabled = false;
-                submitBtn.textContent = formId === 'birthForm' ? 'Submit Birth Registration' :
-                                       formId === 'deathForm' ? 'Submit Death Registration' :
-                                       'Submit Facility Report';
+                submitBtn.textContent = formId === 'birthForm' ? 'Submit Birth Registration' : 'Submit Death Registration';
             });
         }
 
-        // Initialize form handlers
         handleSubmit('birthForm', 'Births');
         handleSubmit('deathForm', 'Deaths');
 
-        // Auto-populate current date for registration date fields
+        // Auto-populate current date
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[name="registrationDate"]').forEach(input => {
