@@ -1,4 +1,4 @@
-<!DOCTYPE html>   
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -589,15 +589,8 @@
 
             <div id="birthFacilityFieldsGroup" style="display: none;">
                 <div class="form-group">
-                    <label class="form-label">Select Health Facility<span class="required">*</span></label>
-                    <select class="form-select" name="facilityFromList" id="birthFacilitySelect" onchange="checkOtherFacility('birth', this)" disabled>
-                        <option value="">Select chiefdom first to see facilities</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="birthOtherFacilityGroup" style="display: none;">
-                    <label class="form-label">Enter Facility Name<span class="required">*</span></label>
-                    <input type="text" class="form-input" name="facilityOther" id="birthFacilityOtherInput" placeholder="Type the facility name">
+                    <label class="form-label">Health Facility Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="facility" id="birthFacilityInput" placeholder="Type the name of the health facility" required>
                 </div>
             </div>
 
@@ -890,17 +883,12 @@ Sandor Chiefdom||Kayima CHC`;
             const regionSelect = document.getElementById(`${formPrefix}Region`);
             const districtSelect = document.getElementById(`${formPrefix}District`);
             const chiefdomSelect = document.getElementById(`${formPrefix}Chiefdom`);
-            const facilitySelect = document.getElementById(`${formPrefix}FacilitySelect`);
             
             regionSelect.addEventListener('change', function() {
                 const region = this.value;
                 districtSelect.innerHTML = '<option value="">Select District</option>';
                 chiefdomSelect.innerHTML = '<option value="">Select district first</option>';
                 chiefdomSelect.disabled = true;
-                if (facilitySelect) {
-                    facilitySelect.innerHTML = '<option value="">Select chiefdom first</option>';
-                    facilitySelect.disabled = true;
-                }
                 
                 if (region && regionDistrictMap[region]) {
                     regionDistrictMap[region].forEach(district => {
@@ -916,10 +904,6 @@ Sandor Chiefdom||Kayima CHC`;
             districtSelect.addEventListener('change', function() {
                 const district = this.value;
                 chiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
-                if (facilitySelect) {
-                    facilitySelect.innerHTML = '<option value="">Select chiefdom first</option>';
-                    facilitySelect.disabled = true;
-                }
                 
                 if (district && districtChiefdomMap[district]) {
                     districtChiefdomMap[district].forEach(chiefdom => {
@@ -931,29 +915,6 @@ Sandor Chiefdom||Kayima CHC`;
                     chiefdomSelect.disabled = false;
                 }
             });
-            
-            if (facilitySelect) {
-                chiefdomSelect.addEventListener('change', function() {
-                    const chiefdom = this.value;
-                    facilitySelect.innerHTML = '<option value="">Select Health Facility</option>';
-                    
-                    if (chiefdom && chiefdomFacilityMap[chiefdom]) {
-                        chiefdomFacilityMap[chiefdom].forEach(facility => {
-                            const option = document.createElement('option');
-                            option.value = facility;
-                            option.textContent = facility;
-                            facilitySelect.appendChild(option);
-                        });
-                        
-                        const otherOption = document.createElement('option');
-                        otherOption.value = 'Other';
-                        otherOption.textContent = '-- Other (Type facility name) --';
-                        facilitySelect.appendChild(otherOption);
-                        
-                        facilitySelect.disabled = false;
-                    }
-                });
-            }
         }
 
         // Login handler
@@ -987,34 +948,15 @@ Sandor Chiefdom||Kayima CHC`;
         // Toggle facility fields
         function toggleFacilityFields(formPrefix, show) {
             const facilityGroup = document.getElementById(`${formPrefix}FacilityFieldsGroup`);
-            const facilitySelect = document.getElementById(`${formPrefix}FacilitySelect`);
-            const facilityOtherInput = document.getElementById(`${formPrefix}FacilityOtherInput`);
+            const facilityInput = document.getElementById(`${formPrefix}FacilityInput`);
             
             if (show) {
                 facilityGroup.style.display = 'block';
-                facilitySelect.required = true;
+                facilityInput.required = true;
             } else {
                 facilityGroup.style.display = 'none';
-                facilitySelect.required = false;
-                facilitySelect.value = '';
-                facilityOtherInput.value = '';
-                facilityOtherInput.required = false;
-                document.getElementById(`${formPrefix}OtherFacilityGroup`).style.display = 'none';
-            }
-        }
-
-        // Check if "Other" facility is selected
-        function checkOtherFacility(formPrefix, selectElement) {
-            const otherGroup = document.getElementById(`${formPrefix}OtherFacilityGroup`);
-            const otherInput = document.getElementById(`${formPrefix}FacilityOtherInput`);
-            
-            if (selectElement.value === 'Other') {
-                otherGroup.style.display = 'block';
-                otherInput.required = true;
-            } else {
-                otherGroup.style.display = 'none';
-                otherInput.required = false;
-                otherInput.value = '';
+                facilityInput.required = false;
+                facilityInput.value = '';
             }
         }
 
@@ -1074,21 +1016,10 @@ Sandor Chiefdom||Kayima CHC`;
 
                     if (formId === 'birthForm') {
                         const bornInHF = data.bornInHF;
-                        if (bornInHF === 'Yes') {
-                            const facilityFromList = data.facilityFromList;
-                            const facilityOther = data.facilityOther;
-                            
-                            if (facilityFromList === 'Other' && facilityOther) {
-                                data.facility = facilityOther;
-                            } else {
-                                data.facility = facilityFromList;
-                            }
-                        } else {
+                        if (bornInHF === 'No') {
                             data.facility = 'Not in Health Facility';
                         }
-                        
-                        delete data.facilityFromList;
-                        delete data.facilityOther;
+                        // If Yes, facility field already contains the typed value
                     }
 
                     if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
