@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRVS Data Collection Form</title>
+    <title>Comprehensive CRVS System</title>
     <style>
         * {
             margin: 0;
@@ -173,16 +173,20 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        .logout-container {
-            text-align: right;
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .logout-btn {
+        .nav-btn {
             background: transparent;
             color: #8b949e;
             border: 1px solid rgba(148, 163, 184, 0.2);
@@ -193,10 +197,16 @@
             transition: all 0.2s ease;
         }
 
-        .logout-btn:hover {
+        .nav-btn:hover {
             background: rgba(30, 41, 59, 0.8);
             border-color: #3b82f6;
             color: #e6edf3;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: white;
+            border: none;
         }
 
         .header {
@@ -247,7 +257,7 @@
 
         .tab-btn {
             flex: 1;
-            min-width: 120px;
+            min-width: 140px;
             background: rgba(30, 41, 59, 0.6);
             color: #94a3b8;
             border: 1px solid rgba(148, 163, 184, 0.2);
@@ -278,6 +288,23 @@
         .form-section.active {
             display: block;
             animation: fadeIn 0.3s ease;
+        }
+
+        .subsection {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .subsection-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
         }
 
         @keyframes fadeIn {
@@ -353,6 +380,10 @@
             cursor: not-allowed;
         }
 
+        .form-input.small {
+            width: 150px;
+        }
+
         .form-textarea {
             min-height: 100px;
             resize: vertical;
@@ -395,6 +426,54 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
+        }
+
+        .cause-chain-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .cause-chain-item .form-input {
+            flex: 2;
+        }
+
+        .cause-chain-item .form-input.interval {
+            flex: 1;
+        }
+
+        .cause-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .alert-box {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .alert-box.warning {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+
+        .alert-box.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .alert-box.info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
         }
 
         .submit-btn {
@@ -457,6 +536,20 @@
             border-bottom: 2px solid rgba(148, 163, 184, 0.2);
         }
 
+        .icd-suggestion {
+            font-size: 11px;
+            color: #8b949e;
+            margin-top: 3px;
+            font-style: italic;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #8b949e;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
         @media (max-width: 600px) {
             .login-card {
                 padding: 30px;
@@ -481,6 +574,10 @@
 
             .form-row {
                 grid-template-columns: 1fr;
+            }
+
+            .cause-chain-item {
+                flex-direction: column;
             }
         }
     </style>
@@ -523,14 +620,15 @@
 
     <!-- Main Content -->
     <div class="container" id="mainContent" style="display: none;">
-        <div class="logout-container">
-            <button class="logout-btn" id="logoutBtn">Logout</button>
+        <div class="top-nav">
+            <button class="nav-btn primary" id="dashboardBtn">📊 View Dashboard</button>
+            <button class="nav-btn" id="logoutBtn">Logout</button>
         </div>
 
         <div class="header">
             <div class="logo">CRVS</div>
-            <h1 class="title">Data Collection Form</h1>
-            <p class="subtitle">Civil Registration & Vital Statistics</p>
+            <h1 class="title">Comprehensive CRVS System</h1>
+            <p class="subtitle">Civil Registration & Vital Statistics - Enhanced Data Collection</p>
         </div>
 
         <div class="success-message" id="successMessage">
@@ -544,44 +642,550 @@
         <div class="form-tabs">
             <button class="tab-btn active" onclick="showForm('birth')">Birth Registration</button>
             <button class="tab-btn" onclick="showForm('death')">Death Registration</button>
+            <button class="tab-btn" onclick="showForm('verbalAutopsy')">Verbal Autopsy</button>
         </div>
 
         <!-- Birth Registration Form -->
         <form id="birthForm" class="form-section active">
             <div class="section-title">Birth Registration</div>
 
-            <div class="form-row">
+            <div class="subsection">
+                <div class="subsection-title">Location Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Region<span class="required">*</span></label>
+                        <select class="form-select" name="region" id="birthRegion" required>
+                            <option value="">Select Region</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">District<span class="required">*</span></label>
+                        <select class="form-select" name="district" id="birthDistrict" required disabled>
+                            <option value="">Select region first</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label class="form-label">Region<span class="required">*</span></label>
-                    <select class="form-select" name="region" id="birthRegion" required>
-                        <option value="">Select Region</option>
+                    <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
+                    <select class="form-select" name="chiefdom" id="birthChiefdom" required disabled>
+                        <option value="">Select district first</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Child Information</div>
+                <div class="form-group">
+                    <label class="form-label">Child's Full Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="childName" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth<span class="required">*</span></label>
+                        <input type="date" class="form-input" name="dateOfBirth" id="birthDOB" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Sex<span class="required">*</span></label>
+                        <select class="form-select" name="sex" required>
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Place of Birth<span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="placeOfBirth" value="Health Facility" required onchange="toggleFacilityField(true)">
+                            <span>Health Facility</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="placeOfBirth" value="Home with TBA" onchange="toggleFacilityField(false)">
+                            <span>Home with Traditional Birth Attendant</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="placeOfBirth" value="Home Unassisted" onchange="toggleFacilityField(false)">
+                            <span>Home (Unassisted)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="facilityNameGroup" style="display: none;">
+                    <label class="form-label">Health Facility Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="facility" id="facilityNameInput" placeholder="Type the name of the health facility">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Type of Birth</label>
+                    <select class="form-select" name="birthType">
+                        <option value="Single">Single Birth</option>
+                        <option value="Twin">Twin</option>
+                        <option value="Triplet">Triplet</option>
+                        <option value="Other Multiple">Other Multiple</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Birth Weight (kg)</label>
+                        <input type="number" class="form-input" name="birthWeight" step="0.1" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Gestational Age (weeks)</label>
+                        <input type="number" class="form-input" name="gestationalAge" min="20" max="45">
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Parent Information</div>
+                <div class="form-group">
+                    <label class="form-label">Mother's Full Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="motherName" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Mother's Age</label>
+                        <input type="number" class="form-input" name="motherAge" min="10" max="60">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mother's Contact</label>
+                        <input type="tel" class="form-input" name="motherContact" placeholder="+232...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Father's Full Name</label>
+                    <input type="text" class="form-input" name="fatherName">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Father's Age</label>
+                    <input type="number" class="form-input" name="fatherAge" min="15" max="100">
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Registration Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Registration Date<span class="required">*</span></label>
+                        <input type="date" class="form-input" name="registrationDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Data Collector Name<span class="required">*</span></label>
+                        <input type="text" class="form-input" name="collectorName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Additional Notes</label>
+                    <textarea class="form-textarea" name="notes" placeholder="Any additional information..."></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Birth Registration</button>
+        </form>
+
+        <!-- Death Registration Form -->
+        <form id="deathForm" class="form-section">
+            <div class="section-title">Death Registration - Medical Certificate of Cause of Death</div>
+
+            <div class="alert-box info" id="deathInfoBox">
+                Complete all sections carefully. Cause of death should follow WHO standard format.
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Location Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Region<span class="required">*</span></label>
+                        <select class="form-select" name="region" id="deathRegion" required>
+                            <option value="">Select Region</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">District<span class="required">*</span></label>
+                        <select class="form-select" name="district" id="deathDistrict" required disabled>
+                            <option value="">Select region first</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
+                        <select class="form-select" name="chiefdom" id="deathChiefdom" required disabled>
+                            <option value="">Select district first</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Facility Name (if applicable)</label>
+                        <input type="text" class="form-input" name="facility">
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Deceased Information</div>
+                <div class="form-group">
+                    <label class="form-label">Deceased Full Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="deceasedName" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date of Death<span class="required">*</span></label>
+                        <input type="date" class="form-input" name="dateOfDeath" id="deathDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" class="form-input" name="dateOfBirth" id="deathDOB">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Age at Death<span class="required">*</span></label>
+                        <input type="number" class="form-input" name="ageAtDeath" id="ageAtDeath" required min="0">
+                        <div class="help-text">Will be auto-calculated if date of birth is entered</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Sex<span class="required">*</span></label>
+                        <select class="form-select" name="sex" id="deathSex" required>
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="alert-box warning" id="maternalAgeWarning" style="display: none;">
+                    This death is of a female of reproductive age. Please complete maternal death section below.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Part I - Chain of Events Leading Directly to Death</div>
+                <div class="help-text" style="margin-bottom: 15px;">
+                    Report the chain of events—diseases, injuries, or complications—that directly caused the death. The UNDERLYING CAUSE should be reported in the bottom line.
+                </div>
+
+                <div class="cause-chain-item">
+                    <div style="flex: 2;">
+                        <div class="cause-label">Immediate cause (final disease/condition)<span class="required">*</span></div>
+                        <input type="text" class="form-input" name="immediateCause" placeholder="e.g., Cardiac arrest" required>
+                        <input type="text" class="form-input" name="immediateCauseICD" placeholder="ICD-10 Code (optional)" style="margin-top: 5px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="cause-label">Interval</div>
+                        <input type="text" class="form-input interval" name="immediateInterval" placeholder="e.g., 2 hours">
+                    </div>
+                </div>
+
+                <div class="cause-chain-item">
+                    <div style="flex: 2;">
+                        <div class="cause-label">Due to (or as a consequence of)</div>
+                        <input type="text" class="form-input" name="intermediateCause1" placeholder="e.g., Myocardial infarction">
+                        <input type="text" class="form-input" name="intermediateCause1ICD" placeholder="ICD-10 Code (optional)" style="margin-top: 5px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="cause-label">Interval</div>
+                        <input type="text" class="form-input interval" name="intermediate1Interval" placeholder="e.g., 3 days">
+                    </div>
+                </div>
+
+                <div class="cause-chain-item">
+                    <div style="flex: 2;">
+                        <div class="cause-label">Due to (or as a consequence of)</div>
+                        <input type="text" class="form-input" name="intermediateCause2" placeholder="e.g., Coronary artery disease">
+                        <input type="text" class="form-input" name="intermediateCause2ICD" placeholder="ICD-10 Code (optional)" style="margin-top: 5px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="cause-label">Interval</div>
+                        <input type="text" class="form-input interval" name="intermediate2Interval" placeholder="e.g., 5 years">
+                    </div>
+                </div>
+
+                <div class="cause-chain-item">
+                    <div style="flex: 2;">
+                        <div class="cause-label">Underlying cause (disease/injury that started the chain)<span class="required">*</span></div>
+                        <input type="text" class="form-input" name="underlyingCause" placeholder="e.g., Hypertension" required>
+                        <input type="text" class="form-input" name="underlyingCauseICD" placeholder="ICD-10 Code (optional)" style="margin-top: 5px;">
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="cause-label">Interval</div>
+                        <input type="text" class="form-input interval" name="underlyingInterval" placeholder="e.g., 10 years">
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Part II - Other Significant Conditions</div>
+                <div class="help-text" style="margin-bottom: 15px;">
+                    Other significant conditions contributing to the death, but not related to the disease or condition causing it.
+                </div>
+                <div class="form-group">
+                    <textarea class="form-textarea" name="otherConditions" placeholder="List other conditions that may have contributed..."></textarea>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Manner of Death</div>
+                <div class="form-group">
+                    <label class="form-label">Manner of Death<span class="required">*</span></label>
+                    <select class="form-select" name="mannerOfDeath" id="mannerOfDeath" required onchange="toggleExternalCause()">
+                        <option value="">Select</option>
+                        <option value="Natural">Natural</option>
+                        <option value="Accident">Accident (Unintentional Injury)</option>
+                        <option value="Suicide">Suicide (Intentional Self-harm)</option>
+                        <option value="Homicide">Homicide (Assault)</option>
+                        <option value="Pending Investigation">Pending Investigation</option>
+                        <option value="Could Not Be Determined">Could Not Be Determined</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="subsection" id="externalCauseSection" style="display: none;">
+                <div class="subsection-title">External Cause Information (For Injuries)</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Place of Injury</label>
+                    <select class="form-select" name="placeOfInjury">
+                        <option value="">Select</option>
+                        <option value="Home">Home</option>
+                        <option value="Street/Highway">Street/Highway</option>
+                        <option value="Workplace">Workplace</option>
+                        <option value="School">School</option>
+                        <option value="Sports/Recreation Area">Sports/Recreation Area</option>
+                        <option value="Health Facility">Health Facility</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">District<span class="required">*</span></label>
-                    <select class="form-select" name="district" id="birthDistrict" required disabled>
-                        <option value="">Select region first</option>
+                    <label class="form-label">Activity at Time of Injury</label>
+                    <select class="form-select" name="activityAtInjury">
+                        <option value="">Select</option>
+                        <option value="Working for income">Working for income</option>
+                        <option value="Household work">Household work</option>
+                        <option value="Traveling">Traveling</option>
+                        <option value="Sports/Leisure">Sports/Leisure</option>
+                        <option value="Sleeping/Resting">Sleeping/Resting</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mechanism of Injury</label>
+                    <input type="text" class="form-input" name="mechanismOfInjury" placeholder="e.g., Fall, Motor vehicle collision, Gunshot wound">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Special Categories</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="roadTrafficCrash" value="Yes">
+                            <span>Road Traffic Crash</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="genderBasedViolence" value="Yes">
+                            <span>Gender-Based Violence</span>
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="workRelated" value="Yes">
+                            <span>Work-Related</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description of How Injury Occurred</label>
+                    <textarea class="form-textarea" name="injuryDescription" placeholder="Describe the circumstances of the injury..."></textarea>
+                </div>
+            </div>
+
+            <div class="subsection" id="maternalDeathSection" style="display: none;">
+                <div class="subsection-title">Maternal Death Information</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Was this a Maternal Death?<span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="maternalDeath" value="No">
+                            <span>No</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="maternalDeath" value="Pregnant">
+                            <span>Yes - Pregnant at time of death</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="maternalDeath" value="During childbirth">
+                            <span>Yes - Death during childbirth</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="maternalDeath" value="Within 42 days">
+                            <span>Yes - Within 42 days after end of pregnancy</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="maternalDeath" value="43 days to 1 year">
+                            <span>Yes - Between 43 days and 1 year after end of pregnancy</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">If maternal death, specify type:</label>
+                    <select class="form-select" name="maternalDeathType">
+                        <option value="">Select</option>
+                        <option value="Direct obstetric">Direct obstetric cause</option>
+                        <option value="Indirect obstetric">Indirect obstetric cause</option>
+                        <option value="Unknown">Unknown</option>
                     </select>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
-                <select class="form-select" name="chiefdom" id="birthChiefdom" required disabled>
-                    <option value="">Select district first</option>
-                </select>
-            </div>
+            <div class="subsection">
+                <div class="subsection-title">Autopsy & Medical Investigation</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Was Autopsy Performed?</label>
+                        <select class="form-select" name="autopsyPerformed">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                            <option value="Unknown">Unknown</option>
+                        </select>
+                    </div>
 
-            <div class="form-group">
-                <label class="form-label">Child's Full Name<span class="required">*</span></label>
-                <input type="text" class="form-input" name="childName" required>
-            </div>
+                    <div class="form-group">
+                        <label class="form-label">Were Findings Used in Certification?</label>
+                        <select class="form-select" name="autopsyFindingsUsed">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                </div>
 
-            <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Date of Birth<span class="required">*</span></label>
-                    <input type="date" class="form-input" name="dateOfBirth" required>
+                    <label class="form-label">Certifier Information<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="certifierName" placeholder="Name of person certifying cause of death" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Certifier Qualification</label>
+                        <select class="form-select" name="certifierQualification">
+                            <option value="">Select</option>
+                            <option value="Medical Doctor">Medical Doctor</option>
+                            <option value="Medical Officer">Medical Officer</option>
+                            <option value="Nurse">Nurse</option>
+                            <option value="Community Health Worker">Community Health Worker</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Date of Certification</label>
+                        <input type="date" class="form-input" name="certificationDate">
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Registration Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Registration Date<span class="required">*</span></label>
+                        <input type="date" class="form-input" name="registrationDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Data Collector Name<span class="required">*</span></label>
+                        <input type="text" class="form-input" name="collectorName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Additional Notes</label>
+                    <textarea class="form-textarea" name="additionalInfo" placeholder="Any additional relevant information..."></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Death Registration</button>
+        </form>
+
+        <!-- Verbal Autopsy Form -->
+        <form id="verbalAutopsyForm" class="form-section">
+            <div class="section-title">Verbal Autopsy - Community Death Investigation</div>
+
+            <div class="alert-box info">
+                This form should be completed for deaths that occurred outside health facilities where no medical certificate is available.
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Location Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Region<span class="required">*</span></label>
+                        <select class="form-select" name="region" id="vaRegion" required>
+                            <option value="">Select Region</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">District<span class="required">*</span></label>
+                        <select class="form-select" name="district" id="vaDistrict" required disabled>
+                            <option value="">Select region first</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
+                    <select class="form-select" name="chiefdom" id="vaChiefdom" required disabled>
+                        <option value="">Select district first</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Village/Community Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="village" required>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Deceased Information</div>
+                <div class="form-group">
+                    <label class="form-label">Deceased Full Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="deceasedName" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date of Death<span class="required">*</span></label>
+                        <input type="date" class="form-input" name="dateOfDeath" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Age at Death<span class="required">*</span></label>
+                        <input type="number" class="form-input" name="ageAtDeath" required min="0">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -594,203 +1198,158 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Place of Birth<span class="required">*</span></label>
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="placeOfBirth" value="Health Facility" required onchange="toggleFacilityField(true)">
-                        <span>Health Facility</span>
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="placeOfBirth" value="Home with TBA" onchange="toggleFacilityField(false)">
-                        <span>Home with Traditional Birth Attendant</span>
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="placeOfBirth" value="Home Unassisted" onchange="toggleFacilityField(false)">
-                        <span>Home (Unassisted)</span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="form-group" id="facilityNameGroup" style="display: none;">
-                <label class="form-label">Health Facility Name<span class="required">*</span></label>
-                <input type="text" class="form-input" name="facility" id="facilityNameInput" placeholder="Type the name of the health facility">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Mother's Full Name<span class="required">*</span></label>
-                <input type="text" class="form-input" name="motherName" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Father's Full Name</label>
-                <input type="text" class="form-input" name="fatherName">
-            </div>
-
-            <div class="form-row">
+            <div class="subsection">
+                <div class="subsection-title">Respondent Information</div>
                 <div class="form-group">
-                    <label class="form-label">Mother's Contact</label>
-                    <input type="tel" class="form-input" name="motherContact" placeholder="+232...">
+                    <label class="form-label">Respondent Name<span class="required">*</span></label>
+                    <input type="text" class="form-input" name="respondentName" required>
+                    <div class="help-text">Person providing information about the death</div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Registration Date<span class="required">*</span></label>
-                    <input type="date" class="form-input" name="registrationDate" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Data Collector Name<span class="required">*</span></label>
-                <input type="text" class="form-input" name="collectorName" required>
-            </div>
-
-            <button type="submit" class="submit-btn">Submit Birth Registration</button>
-        </form>
-
-        <!-- Death Registration Form -->
-        <form id="deathForm" class="form-section">
-            <div class="section-title">Death Registration</div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Region<span class="required">*</span></label>
-                    <select class="form-select" name="region" id="deathRegion" required>
-                        <option value="">Select Region</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">District<span class="required">*</span></label>
-                    <select class="form-select" name="district" id="deathDistrict" required disabled>
-                        <option value="">Select region first</option>
+                    <label class="form-label">Relationship to Deceased<span class="required">*</span></label>
+                    <select class="form-select" name="respondentRelation" required>
+                        <option value="">Select</option>
+                        <option value="Spouse">Spouse</option>
+                        <option value="Parent">Parent</option>
+                        <option value="Child">Child</option>
+                        <option value="Sibling">Sibling</option>
+                        <option value="Other Family">Other Family Member</option>
+                        <option value="Friend/Neighbor">Friend/Neighbor</option>
+                        <option value="Community Leader">Community Leader</option>
                     </select>
                 </div>
             </div>
 
-            <div class="form-row">
+            <div class="subsection">
+                <div class="subsection-title">Circumstances of Death</div>
+                
                 <div class="form-group">
-                    <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
-                    <select class="form-select" name="chiefdom" id="deathChiefdom" required disabled>
-                        <option value="">Select district first</option>
+                    <label class="form-label">Where did death occur?<span class="required">*</span></label>
+                    <select class="form-select" name="placeOfDeath" required>
+                        <option value="">Select</option>
+                        <option value="Home">Home</option>
+                        <option value="On route to facility">On route to health facility</option>
+                        <option value="Traditional healer">At traditional healer</option>
+                        <option value="Other location">Other location</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Facility Name</label>
-                    <input type="text" class="form-input" name="facility">
+                    <label class="form-label">Was medical care sought before death?</label>
+                    <select class="form-select" name="medicalCareSought">
+                        <option value="No">No</option>
+                        <option value="Yes - Health facility">Yes - Health facility</option>
+                        <option value="Yes - Traditional healer">Yes - Traditional healer</option>
+                        <option value="Yes - Pharmacy">Yes - Pharmacy</option>
+                        <option value="Yes - Other">Yes - Other</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Deceased Full Name<span class="required">*</span></label>
-                <input type="text" class="form-input" name="deceasedName" required>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Date of Death<span class="required">*</span></label>
-                    <input type="date" class="form-input" name="dateOfDeath" required>
+            <div class="subsection">
+                <div class="subsection-title">Signs and Symptoms Before Death</div>
+                <div class="help-text" style="margin-bottom: 15px;">
+                    Select all symptoms the deceased experienced before death:
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">Age at Death<span class="required">*</span></label>
-                    <input type="number" class="form-input" name="ageAtDeath" required min="0">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Sex<span class="required">*</span></label>
-                <select class="form-select" name="sex" required>
-                    <option value="">Select</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Age Category<span class="required">*</span></label>
-                <select class="form-select" name="ageCategory" required>
-                    <option value="">Select</option>
-                    <option value="Under 1 year">Under 1 year (Infant)</option>
-                    <option value="1-4 years">1-4 years (Child)</option>
-                    <option value="5-14 years">5-14 years</option>
-                    <option value="15-49 years">15-49 years (Reproductive Age)</option>
-                    <option value="50+ years">50+ years</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Was this a Maternal Death?</label>
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="maternalDeath" value="No">
-                        <span>No</span>
+                
+                <div class="checkbox-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="symptom_fever" value="Yes">
+                        <span>Fever</span>
                     </label>
-                    <label class="radio-option">
-                        <input type="radio" name="maternalDeath" value="Yes">
-                        <span>Yes - Death during pregnancy, childbirth, or within 42 days postpartum</span>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="symptom_cough" value="Yes">
+                        <span>Cough</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="symptom_diarrhea" value="Yes">
+                        <span>Diarrhea</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="symptom_vomiting" value="Yes">
+                        <span>Vomiting</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="symptom_convulsions" value="Yes">
+                        <span>Convulsions/Seizures</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="symptom_unconscious" value="Yes">
+                        <span>Loss of consciousness</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="symptom_breathing" value="Yes">
+                        <span>Difficulty breathing</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="symptom_injury" value="Yes">
+                        <span>Injury/Accident</span>
                     </label>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="form-label">Cause of Death Information Available?<span class="required">*</span></label>
-                <select class="form-select" name="causeOfDeathType" required>
-                    <option value="">Select</option>
-                    <option value="Medical Certificate">Medical Certificate of Cause of Death</option>
-                    <option value="Verbal Autopsy">Verbal Autopsy Completed</option>
-                    <option value="None">No Cause Information Available</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Primary Cause of Death (if known)</label>
-                <select class="form-select" name="causeOfDeath">
-                    <option value="">Select if known</option>
-                    <option value="Malaria">Malaria</option>
-                    <option value="Respiratory Infections">Respiratory Infections</option>
-                    <option value="Diarrheal Diseases">Diarrheal Diseases</option>
-                    <option value="Cardiovascular Disease">Cardiovascular Disease</option>
-                    <option value="Tuberculosis">Tuberculosis</option>
-                    <option value="HIV/AIDS">HIV/AIDS</option>
-                    <option value="Maternal Complications">Maternal Complications</option>
-                    <option value="Neonatal Causes">Neonatal Causes</option>
-                    <option value="Injuries/Accidents">Injuries/Accidents</option>
-                    <option value="Other">Other</option>
-                    <option value="Unknown">Unknown</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Additional Information</label>
-                <textarea class="form-textarea" name="additionalInfo" placeholder="Any additional relevant information about the death..."></textarea>
-            </div>
-
-            <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Registration Date<span class="required">*</span></label>
-                    <input type="date" class="form-input" name="registrationDate" required>
+                    <label class="form-label">Duration of Illness Before Death</label>
+                    <select class="form-select" name="illnessDuration">
+                        <option value="">Select</option>
+                        <option value="Less than 24 hours">Less than 24 hours</option>
+                        <option value="1-3 days">1-3 days</option>
+                        <option value="4-7 days">4-7 days</option>
+                        <option value="1-4 weeks">1-4 weeks</option>
+                        <option value="1-6 months">1-6 months</option>
+                        <option value="More than 6 months">More than 6 months</option>
+                        <option value="Sudden death">Sudden death (no illness)</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Data Collector Name<span class="required">*</span></label>
-                    <input type="text" class="form-input" name="collectorName" required>
+                    <label class="form-label">Description of Final Illness/Events</label>
+                    <textarea class="form-textarea" name="illnessDescription" placeholder="Describe the symptoms and events leading to death..." rows="5"></textarea>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Submit Death Registration</button>
+            <div class="subsection">
+                <div class="subsection-title">Probable Cause Assessment</div>
+                <div class="form-group">
+                    <label class="form-label">Interviewer's Assessment of Probable Cause</label>
+                    <input type="text" class="form-input" name="probableCause" placeholder="Based on symptoms and history">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Additional Comments/Observations</label>
+                    <textarea class="form-textarea" name="vaComments"></textarea>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Interviewer Information</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Interviewer Name<span class="required">*</span></label>
+                        <input type="text" class="form-input" name="interviewerName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Interview Date<span class="required">*</span></label>
+                        <input type="date" class="form-input" name="interviewDate" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Verbal Autopsy</button>
         </form>
     </div>
 
     <script>
         // IMPORTANT: Replace this URL with your Google Apps Script Web App URL
         const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+        const DASHBOARD_URL = 'dashboard.html'; // Separate dashboard file
         
         // Login credentials
         const LOGIN_USERNAME = 'admin';
         const LOGIN_PASSWORD = 'admin123';
 
-        // Cascading data - Add your data in this format: Parent||Child
+        // Cascading data - Add your complete data here
         const CASCADING_DATA = `Eastern Region||Kailahun District
 Eastern Region||Kenema District
 Eastern Region||Kono District
@@ -798,17 +1357,10 @@ Kailahun District||Dea Chiefdom
 Kailahun District||Jawei Chiefdom
 Kenema District||Dama Chiefdom
 Kenema District||Nongowa Chiefdom
-Kono District||Sandor Chiefdom
-Dea Chiefdom||Baiwala CHP
-Jawei Chiefdom||Daru CHC
-Dama Chiefdom||Kpandebu CHC
-Nongowa Chiefdom||Largo CHC
-Sandor Chiefdom||Kayima CHC`;
+Kono District||Sandor Chiefdom`;
 
-        // Parse cascading data
         let regionDistrictMap = {};
         let districtChiefdomMap = {};
-        let chiefdomFacilityMap = {};
 
         function parseCascadingData() {
             const lines = CASCADING_DATA.trim().split('\n');
@@ -825,21 +1377,12 @@ Sandor Chiefdom||Kayima CHC`;
                         if (!regionDistrictMap[parent].includes(child)) {
                             regionDistrictMap[parent].push(child);
                         }
-                    }
-                    else if (child.includes('Chiefdom') || child.includes('City') || child.includes('Zone')) {
+                    } else if (child.includes('Chiefdom') || child.includes('City') || child.includes('Zone')) {
                         if (!districtChiefdomMap[parent]) {
                             districtChiefdomMap[parent] = [];
                         }
                         if (!districtChiefdomMap[parent].includes(child)) {
                             districtChiefdomMap[parent].push(child);
-                        }
-                    }
-                    else {
-                        if (!chiefdomFacilityMap[parent]) {
-                            chiefdomFacilityMap[parent] = [];
-                        }
-                        if (!chiefdomFacilityMap[parent].includes(child)) {
-                            chiefdomFacilityMap[parent].push(child);
                         }
                     }
                 }
@@ -848,25 +1391,27 @@ Sandor Chiefdom||Kayima CHC`;
 
         parseCascadingData();
 
-        // Populate region dropdowns
         function populateRegions() {
             const regions = Object.keys(regionDistrictMap).sort();
-            ['birthRegion', 'deathRegion'].forEach(id => {
+            ['birthRegion', 'deathRegion', 'vaRegion'].forEach(id => {
                 const select = document.getElementById(id);
-                regions.forEach(region => {
-                    const option = document.createElement('option');
-                    option.value = region;
-                    option.textContent = region;
-                    select.appendChild(option);
-                });
+                if (select) {
+                    regions.forEach(region => {
+                        const option = document.createElement('option');
+                        option.value = region;
+                        option.textContent = region;
+                        select.appendChild(option);
+                    });
+                }
             });
         }
 
-        // Setup cascading for forms
         function setupCascading(formPrefix) {
             const regionSelect = document.getElementById(`${formPrefix}Region`);
             const districtSelect = document.getElementById(`${formPrefix}District`);
             const chiefdomSelect = document.getElementById(`${formPrefix}Chiefdom`);
+            
+            if (!regionSelect || !districtSelect || !chiefdomSelect) return;
             
             regionSelect.addEventListener('change', function() {
                 const region = this.value;
@@ -916,12 +1461,14 @@ Sandor Chiefdom||Kayima CHC`;
                 populateRegions();
                 setupCascading('birth');
                 setupCascading('death');
+                setupCascading('va');
+                setupDataValidation();
             } else {
                 errorDiv.classList.add('show');
             }
         });
 
-        // Logout handler
+        // Logout and Dashboard handlers
         document.getElementById('logoutBtn').addEventListener('click', function() {
             document.getElementById('mainContent').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
@@ -929,7 +1476,11 @@ Sandor Chiefdom||Kayima CHC`;
             document.getElementById('password').value = '';
         });
 
-        // Toggle facility fields
+        document.getElementById('dashboardBtn').addEventListener('click', function() {
+            window.open(DASHBOARD_URL, '_blank');
+        });
+
+        // Toggle facility field
         function toggleFacilityField(show) {
             const facilityGroup = document.getElementById('facilityNameGroup');
             const facilityInput = document.getElementById('facilityNameInput');
@@ -942,6 +1493,63 @@ Sandor Chiefdom||Kayima CHC`;
                 facilityInput.required = false;
                 facilityInput.value = '';
             }
+        }
+
+        // Toggle external cause section
+        function toggleExternalCause() {
+            const manner = document.getElementById('mannerOfDeath').value;
+            const externalSection = document.getElementById('externalCauseSection');
+            
+            if (['Accident', 'Suicide', 'Homicide'].includes(manner)) {
+                externalSection.style.display = 'block';
+            } else {
+                externalSection.style.display = 'none';
+            }
+        }
+
+        // Data validation
+        function setupDataValidation() {
+            // Age calculation from DOB
+            const deathDOB = document.getElementById('deathDOB');
+            const deathDate = document.getElementById('deathDate');
+            const ageAtDeath = document.getElementById('ageAtDeath');
+            
+            function calculateAge() {
+                if (deathDOB.value && deathDate.value) {
+                    const dob = new Date(deathDOB.value);
+                    const dod = new Date(deathDate.value);
+                    let age = dod.getFullYear() - dob.getFullYear();
+                    const monthDiff = dod.getMonth() - dob.getMonth();
+                    if (monthDiff < 0 || (monthDiff === 0 && dod.getDate() < dob.getDate())) {
+                        age--;
+                    }
+                    ageAtDeath.value = age >= 0 ? age : '';
+                }
+            }
+            
+            deathDOB.addEventListener('change', calculateAge);
+            deathDate.addEventListener('change', calculateAge);
+            
+            // Maternal death validation
+            const deathSex = document.getElementById('deathSex');
+            const maternalSection = document.getElementById('maternalDeathSection');
+            const maternalWarning = document.getElementById('maternalAgeWarning');
+            
+            function checkMaternalDeath() {
+                const sex = deathSex.value;
+                const age = parseInt(ageAtDeath.value);
+                
+                if (sex === 'Female' && age >= 15 && age <= 49) {
+                    maternalSection.style.display = 'block';
+                    maternalWarning.style.display = 'block';
+                } else {
+                    maternalSection.style.display = 'none';
+                    maternalWarning.style.display = 'none';
+                }
+            }
+            
+            deathSex.addEventListener('change', checkMaternalDeath);
+            ageAtDeath.addEventListener('input', checkMaternalDeath);
         }
 
         // Form switching
@@ -968,12 +1576,48 @@ Sandor Chiefdom||Kayima CHC`;
             document.getElementById('successMessage').style.display = 'block';
             document.getElementById('errorMessage').style.display = 'none';
             setTimeout(hideMessages, 5000);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function showError(message) {
             document.getElementById('errorMessage').textContent = message || 'Error submitting data. Please try again.';
             document.getElementById('errorMessage').style.display = 'block';
             document.getElementById('successMessage').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Data quality validation
+        function validateDeathForm(data) {
+            const warnings = [];
+            
+            // Check for ill-defined causes (should be ICD R-codes)
+            const illDefinedTerms = ['unknown', 'cardiac arrest', 'respiratory arrest', 'old age', 'natural causes'];
+            const immediateCause = (data.immediateCause || '').toLowerCase();
+            
+            if (illDefinedTerms.some(term => immediateCause.includes(term))) {
+                warnings.push('Warning: Immediate cause appears ill-defined. Please specify the actual disease/condition.');
+            }
+            
+            // Check cause chain logic
+            if (data.immediateCause && !data.underlyingCause) {
+                warnings.push('Warning: Underlying cause is required when immediate cause is specified.');
+            }
+            
+            // Maternal death validation
+            if (data.sex === 'Female' && parseInt(data.ageAtDeath) >= 15 && parseInt(data.ageAtDeath) <= 49) {
+                if (!data.maternalDeath) {
+                    warnings.push('Warning: Maternal death status not indicated for female of reproductive age.');
+                }
+            }
+            
+            // External cause validation
+            if (['Accident', 'Suicide', 'Homicide'].includes(data.mannerOfDeath)) {
+                if (!data.mechanismOfInjury && !data.injuryDescription) {
+                    warnings.push('Warning: External cause details incomplete for injury death.');
+                }
+            }
+            
+            return warnings;
         }
 
         // Form submission handlers
@@ -984,6 +1628,7 @@ Sandor Chiefdom||Kayima CHC`;
                 e.preventDefault();
                 
                 const submitBtn = form.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Submitting...';
 
@@ -991,19 +1636,47 @@ Sandor Chiefdom||Kayima CHC`;
                     const formData = new FormData(form);
                     const data = {
                         sheetName: sheetName,
-                        timestamp: new Date().toISOString()
+                        timestamp: new Date().toISOString(),
+                        submissionId: 'CRVS-' + Date.now()
                     };
 
+                    // Convert FormData to object
                     for (let [key, value] of formData.entries()) {
-                        data[key] = value;
+                        if (data[key]) {
+                            // Handle checkboxes with same name
+                            if (!Array.isArray(data[key])) {
+                                data[key] = [data[key]];
+                            }
+                            data[key].push(value);
+                        } else {
+                            data[key] = value;
+                        }
                     }
 
+                    // Special handling for birth form
                     if (formId === 'birthForm') {
                         const placeOfBirth = data.placeOfBirth;
                         if (placeOfBirth !== 'Health Facility') {
                             data.facility = 'Not in Health Facility';
                         }
-                        // If Health Facility, facility field already contains the typed value
+                    }
+
+                    // Data quality validation for death form
+                    if (formId === 'deathForm') {
+                        const warnings = validateDeathForm(data);
+                        if (warnings.length > 0) {
+                            const proceed = confirm('Data Quality Warnings:\n\n' + warnings.join('\n\n') + '\n\nDo you want to proceed with submission?');
+                            if (!proceed) {
+                                submitBtn.disabled = false;
+                                submitBtn.textContent = originalText;
+                                return;
+                            }
+                        }
+                        
+                        // Calculate completeness score
+                        const requiredFields = ['region', 'district', 'chiefdom', 'deceasedName', 'dateOfDeath', 'ageAtDeath', 'sex', 'immediateCause', 'underlyingCause', 'mannerOfDeath'];
+                        const completedFields = requiredFields.filter(field => data[field] && data[field].trim() !== '');
+                        data.completenessScore = Math.round((completedFields.length / requiredFields.length) * 100);
                     }
 
                     if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
@@ -1023,9 +1696,16 @@ Sandor Chiefdom||Kayima CHC`;
                     form.reset();
                     
                     // Reset cascading dropdowns
-                    const formPrefix = formId === 'birthForm' ? 'birth' : 'death';
-                    document.getElementById(`${formPrefix}District`).disabled = true;
-                    document.getElementById(`${formPrefix}Chiefdom`).disabled = true;
+                    if (formId === 'birthForm') {
+                        document.getElementById('birthDistrict').disabled = true;
+                        document.getElementById('birthChiefdom').disabled = true;
+                    } else if (formId === 'deathForm') {
+                        document.getElementById('deathDistrict').disabled = true;
+                        document.getElementById('deathChiefdom').disabled = true;
+                    } else if (formId === 'verbalAutopsyForm') {
+                        document.getElementById('vaDistrict').disabled = true;
+                        document.getElementById('vaChiefdom').disabled = true;
+                    }
 
                 } catch (error) {
                     console.error('Error:', error);
@@ -1033,18 +1713,61 @@ Sandor Chiefdom||Kayima CHC`;
                 }
 
                 submitBtn.disabled = false;
-                submitBtn.textContent = formId === 'birthForm' ? 'Submit Birth Registration' : 'Submit Death Registration';
+                submitBtn.textContent = originalText;
             });
         }
 
+        // Initialize form handlers
         handleSubmit('birthForm', 'Births');
         handleSubmit('deathForm', 'Deaths');
+        handleSubmit('verbalAutopsyForm', 'VerbalAutopsy');
 
-        // Auto-populate current date
+        // Auto-populate current date for registration dates
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[name="registrationDate"]').forEach(input => {
                 input.value = today;
+            });
+        });
+
+        // Common ICD-10 codes for reference (you can expand this)
+        const commonICD10 = {
+            'malaria': 'B50-B54',
+            'tuberculosis': 'A15-A19',
+            'hiv': 'B20-B24',
+            'diarrhea': 'A09',
+            'pneumonia': 'J18',
+            'sepsis': 'A41',
+            'stroke': 'I64',
+            'heart attack': 'I21',
+            'diabetes': 'E14',
+            'maternal hemorrhage': 'O72',
+            'eclampsia': 'O15',
+            'road traffic accident': 'V89',
+            'fall': 'W19',
+            'drowning': 'W74',
+            'poisoning': 'T65',
+            'assault': 'X95-Y09',
+            'suicide': 'X60-X84'
+        };
+
+        // Add ICD code suggestions (optional enhancement)
+        document.querySelectorAll('input[name$="Cause"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                for (let [term, code] of Object.entries(commonICD10)) {
+                    if (value.includes(term)) {
+                        const icdField = this.nextElementSibling;
+                        if (icdField && icdField.placeholder && icdField.placeholder.includes('ICD')) {
+                            if (!icdField.value) {
+                                icdField.value = code;
+                                icdField.style.borderColor = '#10b981';
+                                setTimeout(() => icdField.style.borderColor = '', 2000);
+                            }
+                        }
+                        break;
+                    }
+                }
             });
         });
     </script>
