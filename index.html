@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -574,27 +574,6 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Was child born in a Health Facility?<span class="required">*</span></label>
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="bornInHF" value="Yes" required onchange="toggleFacilityFields('birth', true)">
-                        <span>Yes - Born in Health Facility</span>
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="bornInHF" value="No" onchange="toggleFacilityFields('birth', false)">
-                        <span>No - Born outside Health Facility</span>
-                    </label>
-                </div>
-            </div>
-
-            <div id="birthFacilityFieldsGroup" style="display: none;">
-                <div class="form-group">
-                    <label class="form-label">Health Facility Name<span class="required">*</span></label>
-                    <input type="text" class="form-input" name="facility" id="birthFacilityInput" placeholder="Type the name of the health facility" required>
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label class="form-label">Child's Full Name<span class="required">*</span></label>
                 <input type="text" class="form-input" name="childName" required>
             </div>
@@ -619,18 +598,23 @@
                 <label class="form-label">Place of Birth<span class="required">*</span></label>
                 <div class="radio-group">
                     <label class="radio-option">
-                        <input type="radio" name="placeOfBirth" value="Health Facility" required>
+                        <input type="radio" name="placeOfBirth" value="Health Facility" required onchange="toggleFacilityField(true)">
                         <span>Health Facility</span>
                     </label>
                     <label class="radio-option">
-                        <input type="radio" name="placeOfBirth" value="Home with TBA">
+                        <input type="radio" name="placeOfBirth" value="Home with TBA" onchange="toggleFacilityField(false)">
                         <span>Home with Traditional Birth Attendant</span>
                     </label>
                     <label class="radio-option">
-                        <input type="radio" name="placeOfBirth" value="Home Unassisted">
+                        <input type="radio" name="placeOfBirth" value="Home Unassisted" onchange="toggleFacilityField(false)">
                         <span>Home (Unassisted)</span>
                     </label>
                 </div>
+            </div>
+
+            <div class="form-group" id="facilityNameGroup" style="display: none;">
+                <label class="form-label">Health Facility Name<span class="required">*</span></label>
+                <input type="text" class="form-input" name="facility" id="facilityNameInput" placeholder="Type the name of the health facility">
             </div>
 
             <div class="form-group">
@@ -807,7 +791,7 @@
         const LOGIN_PASSWORD = 'admin';
 
         // Cascading data - Add your data in this format: Parent||Child
-        const CASCADING_DATA = `Eastern Region||Kailahun District
+        const CASCADING_DATA =  `Eastern Region||Kailahun District
 Eastern Region||Kenema District
 Eastern Region||Kono District
 Northern Region||Bombali District
@@ -1157,9 +1141,9 @@ Western Area Urban District||West 3 Zone`;
         });
 
         // Toggle facility fields
-        function toggleFacilityFields(formPrefix, show) {
-            const facilityGroup = document.getElementById(`${formPrefix}FacilityFieldsGroup`);
-            const facilityInput = document.getElementById(`${formPrefix}FacilityInput`);
+        function toggleFacilityField(show) {
+            const facilityGroup = document.getElementById('facilityNameGroup');
+            const facilityInput = document.getElementById('facilityNameInput');
             
             if (show) {
                 facilityGroup.style.display = 'block';
@@ -1226,11 +1210,11 @@ Western Area Urban District||West 3 Zone`;
                     }
 
                     if (formId === 'birthForm') {
-                        const bornInHF = data.bornInHF;
-                        if (bornInHF === 'No') {
+                        const placeOfBirth = data.placeOfBirth;
+                        if (placeOfBirth !== 'Health Facility') {
                             data.facility = 'Not in Health Facility';
                         }
-                        // If Yes, facility field already contains the typed value
+                        // If Health Facility, facility field already contains the typed value
                     }
 
                     if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
