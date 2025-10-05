@@ -1347,17 +1347,234 @@
         
         // Login credentials
         const LOGIN_USERNAME = 'admin';
-        const LOGIN_PASSWORD = 'admin123';
+        const LOGIN_PASSWORD = 'admin';
 
         // Cascading data - Add your complete data here
         const CASCADING_DATA = `Eastern Region||Kailahun District
 Eastern Region||Kenema District
 Eastern Region||Kono District
+Northern Region||Bombali District
+Northern Region||Falaba District
+Northern Region||Koinadugu District
+Northern Region||Tonkolili District
+North West Region||Kambia District
+North West Region||Karene District
+North West Region||Port Loko District
+Southern Region||Bo District
+Southern Region||Bonthe District
+Southern Region||Moyamba District
+Southern Region||Pujehun District
+Western Area||Western Area Urban District
+Western Area||Western Area Rural District
+Bo District||Bo City
+Bo District||Badjia Chiefdom
+Bo District||Bagbwe Chiefdom
+Bo District||Baoma Chiefdom
+Bo District||Bargbo Chiefdom
+Bo District||Bongor Chiefdom
+Bo District||Bumpe Ngao Chiefdom
+Bo District||Gbo Chiefdom
+Bo District||Jaiama Chiefdom
+Bo District||Kakua Chiefdom
+Bo District||Komboya Chiefdom
+Bo District||Lugbu Chiefdom
+Bo District||Niawa Lenga Chiefdom
+Bo District||Selenga Chiefdom
+Bo District||Tikonko Chiefdom
+Bo District||Valunia Chiefdom
+Bo District||Wonde Chiefdom
+Bombali District||Biriwa Chiefdom
+Bombali District||Bombali Sebora Chiefdom
+Bombali District||Bombali Serry Chiefdom
+Bombali District||Gbanti (Bombali) Chiefdom
+Bombali District||Gbendembu Chiefdom
+Bombali District||Kamaranka Chiefdom
+Bombali District||Magbaimba Ndohahun Chiefdom
+Bombali District||Makarie Chiefdom
+Bombali District||Mara Chiefdom
+Bombali District||Ngowahun Chiefdom
+Bombali District||Paki Masabong Chiefdom
+Bombali District||Safroko Limba Chiefdom
+Bombali District||Makeni City
+Bonthe District||Bendu-Cha Chiefdom
+Bonthe District||Bum Chiefdom
+Bonthe District||Dema Chiefdom
+Bonthe District||Imperi Chiefdom
+Bonthe District||Jong Chiefdom
+Bonthe District||Kpanda Kemoh Chiefdom
+Bonthe District||Kwamebai Krim Chiefdom
+Bonthe District||Nongoba Bullom Chiefdom
+Bonthe District||Sittia Chiefdom
+Bonthe District||Sogbini Chiefdom
+Bonthe District||Yawbeko Chiefdom
+Bonthe District||Bonthe Town
+Falaba District||Barawa Wollay Chiefdom
+Falaba District||Delmandugu Chiefdom
+Falaba District||Dembelia-Sinkunia Chiefdom
+Falaba District||Folosaba Dembelia Chiefdom
+Falaba District||Folosaba Kamba Chiefdom
+Falaba District||Kabelia Chiefdom
+Falaba District||Kamadugu Yiraia Chiefdom
+Falaba District||Kulor Saradu Chiefdom
+Falaba District||Mongo Chiefdom
+Falaba District||Morifindu Chiefdom
+Falaba District||Neya Chiefdom
+Falaba District||Nyedu Chiefdom
+Falaba District||Sulima Chiefdom
 Kailahun District||Dea Chiefdom
+Kailahun District||Jahn Chiefdom
 Kailahun District||Jawei Chiefdom
+Kailahun District||Kissi Kama Chiefdom
+Kailahun District||Kissi Teng Chiefdom
+Kailahun District||Kissi Tongi Chiefdom
+Kailahun District||Luawa Chiefdom
+Kailahun District||Malema Chiefdom
+Kailahun District||Mandu Chiefdom
+Kailahun District||Njaluahun Chiefdom
+Kailahun District||Peje Bongre Chiefdom
+Kailahun District||Peje West Chiefdom
+Kailahun District||Penguia Chiefdom
+Kailahun District||Upper Bambara Chiefdom
+Kailahun District||Yawei Chiefdom
+Kambia District||Bramaia Chiefdom
+Kambia District||Dixon Chiefdom
+Kambia District||Gbinleh Chiefdom
+Kambia District||Konimaka Chiefdom
+Kambia District||Magbema Chiefdom
+Kambia District||Mambolo Chiefdom
+Kambia District||Masumgbala Chiefdom
+Kambia District||Munu Thalla Chiefdom
+Kambia District||Samu Chiefdom
+Kambia District||Tonko Limba Chiefdom
+Karene District||Buya Chiefdom
+Karene District||Dibia Chiefdom
+Karene District||Gbanti (Karene) Chiefdom
+Karene District||Gormbahun Chiefdom
+Karene District||Mafonda Makerembay Chiefdom
+Karene District||Romende Chiefdom
+Karene District||Safroko Chiefdom
+Karene District||Sanda Loko Chiefdom
+Karene District||Sanda Magbolonthor Chiefdom
+Karene District||Sanda Tendaren Chiefdom
+Karene District||Sella Limba Chiefdom
+Karene District||Tambaka Simibungie Chiefdom
+Karene District||Tambaka Yobangie Chiefdom
+Kenema District||Kenema City
 Kenema District||Dama Chiefdom
+Kenema District||Dodo Chiefdom
+Kenema District||Gaura Chiefdom
+Kenema District||Gorama Mende Chiefdom
+Kenema District||Kandu Leppiama Chiefdom
+Kenema District||Koya (Kenema) Chiefdom
+Kenema District||Langroma Chiefdom
+Kenema District||Lower Bambara Chiefdom
+Kenema District||Malegohun Chiefdom
+Kenema District||Niawa Chiefdom
+Kenema District||Nomo Chiefdom
 Kenema District||Nongowa Chiefdom
-Kono District||Sandor Chiefdom`;
+Kenema District||Simbaru Chiefdom
+Kenema District||Small Bo Chiefdom
+Kenema District||Tunkia Chiefdom
+Kenema District||Wandor Chiefdom
+Koinadugu District||Diang Chiefdom
+Koinadugu District||Gbonkorbor Kayaka Chiefdom
+Koinadugu District||Kallian Chiefdom
+Koinadugu District||Kamukeh Chiefdom
+Koinadugu District||Kasunko Kakellay Chiefdom
+Koinadugu District||Nieni Chiefdom
+Koinadugu District||Sengbeh Chiefdom
+Koinadugu District||Thamiso Chiefdom
+Koinadugu District||Wara Wara Bafodia Chiefdom
+Koinadugu District||Wara Wara Yagala Chiefdom
+Kono District||Koidu New Sembehun City
+Kono District||Fiama Chiefdom
+Kono District||Gbane Chiefdom
+Kono District||Gbane Kandor Chiefdom
+Kono District||Gbense Chiefdom
+Kono District||Gorama Kono Chiefdom
+Kono District||Kamara Chiefdom
+Kono District||Lei Chiefdom
+Kono District||Mafindor Chiefdom
+Kono District||Nimikoro Chiefdom
+Kono District||Nimiyama Chiefdom
+Kono District||Sandor Chiefdom
+Kono District||Soa Chiefdom
+Kono District||Tankoro Chiefdom
+Kono District||Toli Chiefdom
+Moyamba District||Bagruwa Chiefdom
+Moyamba District||Bumpeh Chiefdom
+Moyamba District||Dasse Chiefdom
+Moyamba District||Fakunya Chiefdom
+Moyamba District||Kaiyamba Chiefdom
+Moyamba District||Kamajei Chiefdom
+Moyamba District||Kargboro Chiefdom
+Moyamba District||Kongbora Chiefdom
+Moyamba District||Kori Chiefdom
+Moyamba District||Kowa Chiefdom
+Moyamba District||Lower Banta Chiefdom
+Moyamba District||Ribbi Chiefdom
+Moyamba District||Timdale Chiefdom
+Moyamba District||Upper Banta Chiefdom
+Port Loko District||Port Loko City
+Port Loko District||Bake-Loko Chiefdom
+Port Loko District||Bureh Chiefdom
+Port Loko District||Kaffu Bullom Chiefdom
+Port Loko District||Kamasondo Chiefdom
+Port Loko District||Kasseh Chiefdom
+Port Loko District||Koya (Port Loko) Chiefdom
+Port Loko District||Lokomasama Chiefdom
+Port Loko District||Maconteh Chiefdom
+Port Loko District||Maforki Chiefdom
+Port Loko District||Makama Chiefdom
+Port Loko District||Marampa Chiefdom
+Port Loko District||Masimera Chiefdom
+Port Loko District||Tainkatopa Chiefdom
+Pujehun District||Barri Chiefdom
+Pujehun District||Galliness Chiefdom
+Pujehun District||Kabonde Chiefdom
+Pujehun District||Kpaka Chiefdom
+Pujehun District||Kpanga Chiefdom
+Pujehun District||Kpanga Krim Chiefdom
+Pujehun District||Makpele Chiefdom
+Pujehun District||Malen Chiefdom
+Pujehun District||Mano Sakrim Chiefdom
+Pujehun District||Peje Chiefdom
+Pujehun District||Perri Chiefdom
+Pujehun District||Soro Gbeima Chiefdom
+Pujehun District||Sowa Chiefdom
+Pujehun District||Yakemoh Kpukumu Krim Chiefdom
+Tonkolili District||Dansogoia Chiefdom
+Tonkolili District||Gbokolenken Masankong Chiefdom
+Tonkolili District||Gbokolenken Mayeppoh Chiefdom
+Tonkolili District||Gbokolenken Polie Chiefdom
+Tonkolili District||Gbokolenken Yele Chiefdom
+Tonkolili District||Kafe Chiefdom
+Tonkolili District||Kalantuba Chiefdom
+Tonkolili District||Kholifa Mabang Chiefdom
+Tonkolili District||Kholifa Mamuntha Chiefdom
+Tonkolili District||Kholifa Rowalla Chiefdom
+Tonkolili District||Kunike Barina Chiefdom
+Tonkolili District||Kunike Fulawusu Chiefdom
+Tonkolili District||Kunike Sanda Chiefdom
+Tonkolili District||Malal Chiefdom
+Tonkolili District||Sambaya Bendugu Chiefdom
+Tonkolili District||Simiria Chiefdom
+Tonkolili District||Tane Chiefdom
+Tonkolili District||Yoni Mabanta Chiefdom
+Tonkolili District||Yoni Mamala Chiefdom
+Western Area Rural District||Koya Rural Zone
+Western Area Rural District||Mountain Rural Zone
+Western Area Rural District||Waterloo Rural Zone
+Western Area Rural District||York Rural Zone
+Western Area Urban District||Central 1 Zone
+Western Area Urban District||Central 2 Zone
+Western Area Urban District||East 1 Zone
+Western Area Urban District||East 2 Zone
+Western Area Urban District||East 3 Zone
+Western Area Urban District||West 1 Zone
+Western Area Urban District||West 2 Zone
+Western Area Urban District||West 3 Zone`;
+
 
         let regionDistrictMap = {};
         let districtChiefdomMap = {};
