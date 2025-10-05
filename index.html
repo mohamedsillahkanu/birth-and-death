@@ -348,6 +348,11 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
+        .form-select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .form-textarea {
             min-height: 100px;
             resize: vertical;
@@ -548,44 +553,23 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Region<span class="required">*</span></label>
-                    <select class="form-select" name="region" required>
+                    <select class="form-select" name="region" id="birthRegion" required>
                         <option value="">Select Region</option>
-                        <option value="Eastern Region">Eastern Region</option>
-                        <option value="Northern Region">Northern Region</option>
-                        <option value="North West Region">North West Region</option>
-                        <option value="Southern Region">Southern Region</option>
-                        <option value="Western Area">Western Area</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">District<span class="required">*</span></label>
-                    <select class="form-select" name="district" required>
-                        <option value="">Select District</option>
-                        <option value="Western Area Urban">Western Area Urban District</option>
-                        <option value="Western Area Rural">Western Area Rural District</option>
-                        <option value="Bo">Bo District</option>
-                        <option value="Kenema">Kenema District</option>
-                        <option value="Kailahun">Kailahun District</option>
-                        <option value="Bombali">Bombali District</option>
-                        <option value="Kambia">Kambia District</option>
-                        <option value="Port Loko">Port Loko District</option>
-                        <option value="Tonkolili">Tonkolili District</option>
-                        <option value="Kono">Kono District</option>
-                        <option value="Bonthe">Bonthe District</option>
-                        <option value="Moyamba">Moyamba District</option>
-                        <option value="Pujehun">Pujehun District</option>
-                        <option value="Koinadugu">Koinadugu District</option>
-                        <option value="Falaba">Falaba District</option>
-                        <option value="Karene">Karene District</option>
+                    <select class="form-select" name="district" id="birthDistrict" required disabled>
+                        <option value="">Select region first</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
-                <select class="form-select" name="chiefdom" id="birthChiefdom" required>
-                    <option value="">First select a district</option>
+                <select class="form-select" name="chiefdom" id="birthChiefdom" required disabled>
+                    <option value="">Select district first</option>
                 </select>
             </div>
 
@@ -593,27 +577,27 @@
                 <label class="form-label">Was child born in a Health Facility?<span class="required">*</span></label>
                 <div class="radio-group">
                     <label class="radio-option">
-                        <input type="radio" name="bornInHF" value="Yes" required onchange="toggleFacilityFields(true)">
+                        <input type="radio" name="bornInHF" value="Yes" required onchange="toggleFacilityFields('birth', true)">
                         <span>Yes - Born in Health Facility</span>
                     </label>
                     <label class="radio-option">
-                        <input type="radio" name="bornInHF" value="No" onchange="toggleFacilityFields(false)">
+                        <input type="radio" name="bornInHF" value="No" onchange="toggleFacilityFields('birth', false)">
                         <span>No - Born outside Health Facility</span>
                     </label>
                 </div>
             </div>
 
-            <div id="facilityFieldsGroup" style="display: none;">
+            <div id="birthFacilityFieldsGroup" style="display: none;">
                 <div class="form-group">
                     <label class="form-label">Select Health Facility<span class="required">*</span></label>
-                    <select class="form-select" name="facilityFromList" id="birthFacilitySelect" onchange="checkOtherFacility(this)">
-                        <option value="">First select chiefdom to see facilities</option>
+                    <select class="form-select" name="facilityFromList" id="birthFacilitySelect" onchange="checkOtherFacility('birth', this)" disabled>
+                        <option value="">Select chiefdom first to see facilities</option>
                     </select>
                 </div>
 
-                <div class="form-group" id="otherFacilityGroup" style="display: none;">
+                <div class="form-group" id="birthOtherFacilityGroup" style="display: none;">
                     <label class="form-label">Enter Facility Name<span class="required">*</span></label>
-                    <input type="text" class="form-input" name="facilityOther" id="facilityOtherInput" placeholder="Type the facility name">
+                    <input type="text" class="form-input" name="facilityOther" id="birthFacilityOtherInput" placeholder="Type the facility name">
                 </div>
             </div>
 
@@ -693,26 +677,15 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Region<span class="required">*</span></label>
-                    <select class="form-select" name="region" required>
+                    <select class="form-select" name="region" id="deathRegion" required>
                         <option value="">Select Region</option>
-                        <option value="Eastern Region">Eastern Region</option>
-                        <option value="Northern Region">Northern Region</option>
-                        <option value="North West Region">North West Region</option>
-                        <option value="Southern Region">Southern Region</option>
-                        <option value="Western Area">Western Area</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">District<span class="required">*</span></label>
-                    <select class="form-select" name="district" required>
-                        <option value="">Select District</option>
-                        <option value="Western Area Urban">Western Area Urban District</option>
-                        <option value="Western Area Rural">Western Area Rural District</option>
-                        <option value="Bo">Bo District</option>
-                        <option value="Kenema">Kenema District</option>
-                        <option value="Kailahun">Kailahun District</option>
-                        <option value="Bombali">Bombali District</option>
+                    <select class="form-select" name="district" id="deathDistrict" required disabled>
+                        <option value="">Select region first</option>
                     </select>
                 </div>
             </div>
@@ -720,8 +693,8 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Chiefdom/Zone<span class="required">*</span></label>
-                    <select class="form-select" name="chiefdom" id="deathChiefdom" required>
-                        <option value="">First select a district</option>
+                    <select class="form-select" name="chiefdom" id="deathChiefdom" required disabled>
+                        <option value="">Select district first</option>
                     </select>
                 </div>
 
@@ -840,61 +813,20 @@
         const LOGIN_USERNAME = 'admin';
         const LOGIN_PASSWORD = 'admin123';
 
-        // Cascading data in pipe-delimited format
+        // Cascading data - Add your data in this format: Parent||Child
         const CASCADING_DATA = `Eastern Region||Kailahun District
 Eastern Region||Kenema District
 Eastern Region||Kono District
-Northern Region||Bombali District
-Northern Region||Tonkolili District
-North West Region||Kambia District
-North West Region||Port Loko District
-Southern Region||Bo District
-Southern Region||Bonthe District
-Southern Region||Moyamba District
-Western Area||Western Area Urban District
-Western Area||Western Area Rural District
-Bo District||Bo City
-Bo District||Badjia Chiefdom
-Bo District||Bumpe Ngao Chiefdom
-Bo District||Kakua Chiefdom
-Bombali District||Makeni City
-Bombali District||Bombali Sebora Chiefdom
-Bombali District||Safroko Limba Chiefdom
-Kenema District||Kenema City
+Kailahun District||Dea Chiefdom
+Kailahun District||Jawei Chiefdom
 Kenema District||Dama Chiefdom
 Kenema District||Nongowa Chiefdom
-Kono District||Koidu New Sembehun City
 Kono District||Sandor Chiefdom
-Western Area Urban District||Central 1 Zone
-Western Area Urban District||East 1 Zone
-Western Area Urban District||West 1 Zone
-Western Area Rural District||Waterloo Rural Zone
-Western Area Rural District||York Rural Zone
-Bo City||Bo Government Hospital
-Bo City||Kakua Static CHC
-Bo City||Manjiama CHC
-Badjia Chiefdom||Ngelehun CHC
-Badjia Chiefdom||Njandama MCHP
-Bumpe Ngao Chiefdom||Bumpe CHC
-Bumpe Ngao Chiefdom||Serabu Mission Hospital
-Kakua Chiefdom||Bo Childrens Hospital
-Kakua Chiefdom||Gender CHP
-Makeni City||Makeni Government Hospital
-Makeni City||Holy Spirit Hospital
-Bombali Sebora Chiefdom||Patebana CHC
-Safroko Limba Chiefdom||Binkolo CHC
-Kenema City||Kenema Government Hospital
-Kenema City||Ahmadiyya Muslim Hospital
+Dea Chiefdom||Baiwala CHP
+Jawei Chiefdom||Daru CHC
 Dama Chiefdom||Kpandebu CHC
 Nongowa Chiefdom||Largo CHC
-Koidu New Sembehun City||Koidu Government Hospital
-Sandor Chiefdom||Kayima CHC
-Central 1 Zone||Macauley Street Government Hospital
-East 1 Zone||Princess Christian Maternity Hospital
-West 1 Zone||Grey Bush CHC
-Waterloo Rural Zone||Waterloo CHC
-Waterloo Rural Zone||Waterloo Rural Community Hospital
-York Rural Zone||Lakka Government Hospital`;
+Sandor Chiefdom||Kayima CHC`;
 
         // Parse cascading data
         let regionDistrictMap = {};
@@ -939,6 +871,91 @@ York Rural Zone||Lakka Government Hospital`;
 
         parseCascadingData();
 
+        // Populate region dropdowns
+        function populateRegions() {
+            const regions = Object.keys(regionDistrictMap).sort();
+            ['birthRegion', 'deathRegion'].forEach(id => {
+                const select = document.getElementById(id);
+                regions.forEach(region => {
+                    const option = document.createElement('option');
+                    option.value = region;
+                    option.textContent = region;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // Setup cascading for forms
+        function setupCascading(formPrefix) {
+            const regionSelect = document.getElementById(`${formPrefix}Region`);
+            const districtSelect = document.getElementById(`${formPrefix}District`);
+            const chiefdomSelect = document.getElementById(`${formPrefix}Chiefdom`);
+            const facilitySelect = document.getElementById(`${formPrefix}FacilitySelect`);
+            
+            regionSelect.addEventListener('change', function() {
+                const region = this.value;
+                districtSelect.innerHTML = '<option value="">Select District</option>';
+                chiefdomSelect.innerHTML = '<option value="">Select district first</option>';
+                chiefdomSelect.disabled = true;
+                if (facilitySelect) {
+                    facilitySelect.innerHTML = '<option value="">Select chiefdom first</option>';
+                    facilitySelect.disabled = true;
+                }
+                
+                if (region && regionDistrictMap[region]) {
+                    regionDistrictMap[region].forEach(district => {
+                        const option = document.createElement('option');
+                        option.value = district;
+                        option.textContent = district;
+                        districtSelect.appendChild(option);
+                    });
+                    districtSelect.disabled = false;
+                }
+            });
+            
+            districtSelect.addEventListener('change', function() {
+                const district = this.value;
+                chiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
+                if (facilitySelect) {
+                    facilitySelect.innerHTML = '<option value="">Select chiefdom first</option>';
+                    facilitySelect.disabled = true;
+                }
+                
+                if (district && districtChiefdomMap[district]) {
+                    districtChiefdomMap[district].forEach(chiefdom => {
+                        const option = document.createElement('option');
+                        option.value = chiefdom;
+                        option.textContent = chiefdom;
+                        chiefdomSelect.appendChild(option);
+                    });
+                    chiefdomSelect.disabled = false;
+                }
+            });
+            
+            if (facilitySelect) {
+                chiefdomSelect.addEventListener('change', function() {
+                    const chiefdom = this.value;
+                    facilitySelect.innerHTML = '<option value="">Select Health Facility</option>';
+                    
+                    if (chiefdom && chiefdomFacilityMap[chiefdom]) {
+                        chiefdomFacilityMap[chiefdom].forEach(facility => {
+                            const option = document.createElement('option');
+                            option.value = facility;
+                            option.textContent = facility;
+                            facilitySelect.appendChild(option);
+                        });
+                        
+                        const otherOption = document.createElement('option');
+                        otherOption.value = 'Other';
+                        otherOption.textContent = '-- Other (Type facility name) --';
+                        facilitySelect.appendChild(otherOption);
+                        
+                        facilitySelect.disabled = false;
+                    }
+                });
+            }
+        }
+
         // Login handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -951,6 +968,9 @@ York Rural Zone||Lakka Government Hospital`;
                 errorDiv.classList.remove('show');
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainContent').style.display = 'block';
+                populateRegions();
+                setupCascading('birth');
+                setupCascading('death');
             } else {
                 errorDiv.classList.add('show');
             }
@@ -965,10 +985,10 @@ York Rural Zone||Lakka Government Hospital`;
         });
 
         // Toggle facility fields
-        function toggleFacilityFields(show) {
-            const facilityGroup = document.getElementById('facilityFieldsGroup');
-            const facilitySelect = document.querySelector('select[name="facilityFromList"]');
-            const facilityOtherInput = document.getElementById('facilityOtherInput');
+        function toggleFacilityFields(formPrefix, show) {
+            const facilityGroup = document.getElementById(`${formPrefix}FacilityFieldsGroup`);
+            const facilitySelect = document.getElementById(`${formPrefix}FacilitySelect`);
+            const facilityOtherInput = document.getElementById(`${formPrefix}FacilityOtherInput`);
             
             if (show) {
                 facilityGroup.style.display = 'block';
@@ -979,14 +999,14 @@ York Rural Zone||Lakka Government Hospital`;
                 facilitySelect.value = '';
                 facilityOtherInput.value = '';
                 facilityOtherInput.required = false;
-                document.getElementById('otherFacilityGroup').style.display = 'none';
+                document.getElementById(`${formPrefix}OtherFacilityGroup`).style.display = 'none';
             }
         }
 
         // Check if "Other" facility is selected
-        function checkOtherFacility(selectElement) {
-            const otherGroup = document.getElementById('otherFacilityGroup');
-            const otherInput = document.getElementById('facilityOtherInput');
+        function checkOtherFacility(formPrefix, selectElement) {
+            const otherGroup = document.getElementById(`${formPrefix}OtherFacilityGroup`);
+            const otherInput = document.getElementById(`${formPrefix}FacilityOtherInput`);
             
             if (selectElement.value === 'Other') {
                 otherGroup.style.display = 'block';
@@ -997,79 +1017,6 @@ York Rural Zone||Lakka Government Hospital`;
                 otherInput.value = '';
             }
         }
-
-        // Setup cascading for birth form
-        const birthForm = document.getElementById('birthForm');
-        const birthDistrictSelect = birthForm.querySelector('select[name="district"]');
-        const birthChiefdomSelect = document.getElementById('birthChiefdom');
-        const birthFacilitySelect = document.getElementById('birthFacilitySelect');
-        
-        birthDistrictSelect.addEventListener('change', function() {
-            const selectedDistrict = this.value;
-            birthChiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
-            birthFacilitySelect.innerHTML = '<option value="">First select chiefdom</option>';
-            birthFacilitySelect.disabled = true;
-            
-            if (selectedDistrict && districtChiefdomMap[selectedDistrict]) {
-                districtChiefdomMap[selectedDistrict].forEach(chiefdom => {
-                    const option = document.createElement('option');
-                    option.value = chiefdom;
-                    option.textContent = chiefdom;
-                    birthChiefdomSelect.appendChild(option);
-                });
-                birthChiefdomSelect.disabled = false;
-            } else {
-                birthChiefdomSelect.innerHTML = '<option value="">First select a district</option>';
-                birthChiefdomSelect.disabled = true;
-            }
-        });
-        
-        birthChiefdomSelect.addEventListener('change', function() {
-            const selectedChiefdom = this.value;
-            birthFacilitySelect.innerHTML = '<option value="">Select Health Facility</option>';
-            
-            if (selectedChiefdom && chiefdomFacilityMap[selectedChiefdom]) {
-                chiefdomFacilityMap[selectedChiefdom].forEach(facility => {
-                    const option = document.createElement('option');
-                    option.value = facility;
-                    option.textContent = facility;
-                    birthFacilitySelect.appendChild(option);
-                });
-                
-                const otherOption = document.createElement('option');
-                otherOption.value = 'Other';
-                otherOption.textContent = '-- Other (Type facility name) --';
-                birthFacilitySelect.appendChild(otherOption);
-                
-                birthFacilitySelect.disabled = false;
-            } else {
-                birthFacilitySelect.innerHTML = '<option value="">Select chiefdom first</option>';
-                birthFacilitySelect.disabled = true;
-            }
-        });
-
-        // Setup cascading for death form
-        const deathForm = document.getElementById('deathForm');
-        const deathDistrictSelect = deathForm.querySelector('select[name="district"]');
-        const deathChiefdomSelect = document.getElementById('deathChiefdom');
-        
-        deathDistrictSelect.addEventListener('change', function() {
-            const selectedDistrict = this.value;
-            deathChiefdomSelect.innerHTML = '<option value="">Select Chiefdom/Zone</option>';
-            
-            if (selectedDistrict && districtChiefdomMap[selectedDistrict]) {
-                districtChiefdomMap[selectedDistrict].forEach(chiefdom => {
-                    const option = document.createElement('option');
-                    option.value = chiefdom;
-                    option.textContent = chiefdom;
-                    deathChiefdomSelect.appendChild(option);
-                });
-                deathChiefdomSelect.disabled = false;
-            } else {
-                deathChiefdomSelect.innerHTML = '<option value="">First select a district</option>';
-                deathChiefdomSelect.disabled = true;
-            }
-        });
 
         // Form switching
         function showForm(formType) {
@@ -1159,6 +1106,11 @@ York Rural Zone||Lakka Government Hospital`;
 
                     showSuccess();
                     form.reset();
+                    
+                    // Reset cascading dropdowns
+                    const formPrefix = formId === 'birthForm' ? 'birth' : 'death';
+                    document.getElementById(`${formPrefix}District`).disabled = true;
+                    document.getElementById(`${formPrefix}Chiefdom`).disabled = true;
 
                 } catch (error) {
                     console.error('Error:', error);
